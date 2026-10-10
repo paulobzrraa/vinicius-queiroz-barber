@@ -1,0 +1,6 @@
+@import 'tailwindcss';
+
+/* Design system: tokens, utilitários e estilos base. */
+@import './tokens.css';
+@import './utilities.css';
+@import './base.css';

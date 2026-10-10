@@ -1,0 +1,61 @@
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Os controles têm resposta ao toque própria; o flash cinza do mobile sobra. */
+    -webkit-tap-highlight-color: transparent;
+    /* As âncoras (#galeria...) param logo abaixo do header fixo, não atrás dele. */
+    scroll-padding-top: var(--header-height);
+  }
+
+  /* Rolagem suave entre seções, só para quem não pediu menos movimento. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    min-height: 100dvh;
+    @apply bg-background font-sans text-body text-foreground antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    @apply bg-accent text-accent-foreground;
+  }
+
+  /* Foco visível só na navegação por teclado, na cor de destaque do tom atual. */
+  :focus-visible {
+    @apply outline-2 outline-offset-3 outline-accent;
+  }
+
+  /* Todo controle clicável mostra o ponteiro de mão; desabilitado volta ao padrão. */
+  a[href],
+  button,
+  summary,
+  select,
+  label[for],
+  input[type='checkbox'],
+  input[type='radio'],
+  input[type='file'],
+  [role='button'] {
+    cursor: pointer;
+  }
+
+  :disabled,
+  [aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+}

@@ -1,0 +1,215 @@
+/*
+ * Tokens do design system da Vinicius Queiroz Barber.
+ *
+ * Duas camadas:
+ * 1. Paleta base (:root): os valores de cor. Não geram classes e não devem
+ *    ser usados direto nos componentes.
+ * 2. Tokens semânticos (@theme): o papel de cada cor, tamanho e espaço. Cada
+ *    um vira classe do Tailwind (--color-accent -> bg-accent, text-accent...).
+ *
+ * A marca é monocromática. A paleta vem da logo oficial (perfil do Instagram
+ * o perfil oficial da marca), medida nos pixels: texto #191919 e fundo branco, sem
+ * nenhuma cor. Nas fotos do perfil, 74% dos pixels também são neutros; o
+ * resto é tom de pele e madeira, sem cor de marca. Por isso não há cor de
+ * destaque: o destaque é a inversão (branco no escuro, preto no claro).
+ *
+ * Todos os pares de texto e fundo passam no contraste WCAG AA, nos dois tons.
+ */
+
+:root {
+  /* Cinzas neutros (R=G=B), do branco da logo ao preto da marca */
+  --white: #ffffff; /* fundo da logo */
+  --gray-50: #f4f4f4;
+  --gray-100: #e8e8e8;
+  --gray-200: #d2d2d2;
+  --gray-300: #b3b3b3;
+  --gray-400: #999999; /* texto de apoio no tom escuro */
+  --gray-500: #858585; /* bordas de controles no tom claro (3:1) */
+  --gray-600: #707070; /* bordas de controles no tom escuro (3:1) */
+  --gray-700: #666666; /* texto de apoio no tom claro */
+  --gray-800: #333333;
+  --gray-850: #262626;
+  --gray-900: #191919; /* texto da logo: o preto da marca */
+  --gray-950: #0d0d0d; /* fundo do tom escuro */
+
+  /* Cores das sombras; mudam com o tom (ver tone-light) */
+  --shadow-highlight: rgb(255 255 255 / 0.06);
+  --shadow-ambient: rgb(0 0 0 / 0.4);
+  --shadow-drop: rgb(0 0 0 / 0.7);
+
+  /* Durações (o Tailwind não tem tokens de duração no tema) */
+  --duration-press: 160ms; /* resposta ao toque */
+  --duration-hover: 200ms; /* troca de cor */
+  --duration-ui: 250ms; /* movimento de interface */
+
+  /* Altura do header fixo: usada na rolagem das âncoras e no topo do Hero */
+  --header-height: 4.5rem;
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --header-height: 5rem;
+  }
+}
+
+@theme {
+  /* ---------------------------------------------------------------- Cores */
+  --color-background: var(--gray-950);
+  --color-surface: var(--gray-900);
+  --color-surface-raised: var(--gray-850);
+  --color-border: var(--gray-800);
+  --color-border-strong: var(--gray-600);
+  --color-foreground: var(--gray-50);
+  --color-muted: var(--gray-400);
+  /* Destaque: inversão do fundo. Botão principal, foco e seleção. */
+  --color-accent: var(--white);
+  --color-accent-hover: var(--gray-100);
+  --color-accent-foreground: var(--gray-950);
+
+  /* ----------------------------------------------------------- Tipografia */
+  /*
+   * SF Pro nos aparelhos Apple, pela fonte do sistema (a licença não permite
+   * embutir o SF Pro num site). Nos demais, Inter, com tamanhos ópticos como
+   * o SF. O navegador só baixa a Inter quando o SF não está disponível.
+   */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  /*
+   * Fonte de título, separada do corpo de texto. Jost é uma geométrica livre
+   * (Google Fonts) da mesma família do Futura/Century Gothic — aproxima o
+   * estilo fino e bem espaçado do nome da logo (uma imagem, não uma fonte
+   * de verdade, então isto é uma aproximação, não a fonte exata da marca).
+   */
+  --font-display: 'Jost', var(--font-sans);
+
+  /*
+   * Escala de títulos, fluida entre 320px e as telas grandes. O tracking é
+   * mais neutro que num título em SF Pro/Inter — a Jost já é bem aberta, e
+   * tracking negativo forte deixa as letras coladas.
+   */
+  --text-display: clamp(3rem, 1.75rem + 6.25vw, 8.5rem);
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.005em;
+  --text-display--font-weight: 700;
+
+  --text-title-1: clamp(2.5rem, 1.6rem + 4.5vw, 6rem);
+  --text-title-1--line-height: 1.04;
+  --text-title-1--letter-spacing: -0.005em;
+  --text-title-1--font-weight: 700;
+
+  --text-title-2: clamp(2rem, 1.4rem + 3vw, 4.5rem);
+  --text-title-2--line-height: 1.08;
+  --text-title-2--letter-spacing: -0.005em;
+  --text-title-2--font-weight: 700;
+
+  --text-title-3: clamp(1.5rem, 1.25rem + 1.25vw, 2.25rem);
+  --text-title-3--line-height: 1.16;
+  --text-title-3--letter-spacing: 0em;
+  --text-title-3--font-weight: 600;
+
+  --text-title-4: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-title-4--line-height: 1.25;
+  --text-title-4--letter-spacing: 0em;
+  --text-title-4--font-weight: 600;
+
+  /* Texto corrido */
+  --text-lead: clamp(1.125rem, 1.05rem + 0.375vw, 1.375rem);
+  --text-lead--line-height: 1.45;
+  --text-lead--letter-spacing: -0.015em;
+
+  --text-body: 1.0625rem; /* 17px, o corpo de texto da Apple */
+  --text-body--line-height: 1.55;
+  --text-body--letter-spacing: -0.011em;
+
+  --text-small: 0.9375rem; /* 15px */
+  --text-small--line-height: 1.45;
+  --text-small--letter-spacing: -0.006em;
+
+  --text-caption: 0.8125rem; /* 13px */
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: 0;
+
+  /* Rótulo curto em caixa alta, acima dos títulos */
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.16em;
+  --text-eyebrow--font-weight: 600;
+
+  /* --------------------------------------------------------- Espaçamentos */
+  /*
+   * Espaços de layout, fluidos. Dentro dos componentes vale a escala padrão
+   * de 4px do Tailwind (p-4, gap-6...).
+   */
+  --spacing-gutter: clamp(1rem, 0.25rem + 3.75vw, 3.5rem); /* respiro lateral da página */
+  --spacing-section: clamp(3.5rem, 2rem + 5vw, 7rem); /* entre seções (topo) */
+  --spacing-section-end: clamp(
+    2rem,
+    1rem + 2vw,
+    3.5rem
+  ); /* fim da seção, antes da próxima (menor que o topo) */
+  --spacing-block: clamp(2.5rem, 1.75rem + 3vw, 5rem); /* entre o título e o conteúdo */
+  --spacing-card: clamp(1.5rem, 1.25rem + 1vw, 2.25rem); /* respiro interno dos cards */
+  --spacing-header: var(--header-height); /* altura do header fixo */
+
+  /* ---------------------------------------------------- Larguras máximas */
+  --container-text: 42rem; /* ~70 caracteres de texto corrido */
+  --container-narrow: 56rem;
+  --container-content: 80rem;
+  --container-wide: 100rem;
+
+  /* ---------------------------------------------------------- Breakpoints */
+  /* sm 640, md 768, lg 1024, xl 1280 e 2xl 1536 (padrões) continuam valendo. */
+  --breakpoint-xs: 23.4375rem; /* 375px */
+  --breakpoint-3xl: 120rem; /* 1920px */
+
+  /* ----------------------------------------------------------------- Raios */
+  --radius-control: 9999px; /* botões e chips: pílula */
+  --radius-card: 1.25rem;
+  --radius-media: 1rem;
+
+  /* --------------------------------------------------------------- Sombras */
+  --shadow-card: inset 0 1px 0 0 var(--shadow-highlight), 0 1px 2px 0 var(--shadow-ambient);
+  --shadow-elevated: inset 0 1px 0 0 var(--shadow-highlight), 0 24px 48px -16px var(--shadow-drop);
+  /* Brilho suave na cor do texto: claro no tom escuro, escuro no tom claro. */
+  --shadow-glow:
+    0 0 0 1px color-mix(in oklab, var(--color-foreground) 18%, transparent),
+    0 12px 32px -8px color-mix(in oklab, var(--color-foreground) 28%, transparent);
+
+  /* ---------------------------------------------------------- Proporções */
+  --aspect-portrait: 4 / 5;
+  --aspect-landscape: 3 / 2;
+  --aspect-cinema: 21 / 9;
+
+  /* ------------------------------------------------------------ Movimento */
+  /* Curvas fortes, espelhadas em src/animations/tokens.ts. Evite ease-in. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); /* entradas e respostas */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); /* deslocamento na tela */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); /* gavetas e painéis */
+  --default-transition-duration: var(--duration-hover);
+  --default-transition-timing-function: ease;
+}
+
+/*
+ * Tom claro, para seções alternadas: branco com o preto da marca (#191919,
+ * o texto da logo). Redefine os tokens semânticos no escopo: tudo o que
+ * estiver dentro se adapta sozinho, inclusive a logo.
+ */
+@utility tone-light {
+  --color-background: var(--white);
+  --color-surface: var(--gray-50);
+  --color-surface-raised: var(--gray-100);
+  --color-border: var(--gray-200);
+  --color-border-strong: var(--gray-500);
+  --color-foreground: var(--gray-900);
+  --color-muted: var(--gray-700);
+  --color-accent: var(--gray-900);
+  --color-accent-hover: var(--gray-800);
+  --color-accent-foreground: var(--white);
+  --shadow-highlight: rgb(255 255 255 / 0.8);
+  --shadow-ambient: rgb(25 25 25 / 0.06);
+  --shadow-drop: rgb(25 25 25 / 0.16);
+
+  color-scheme: light;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}

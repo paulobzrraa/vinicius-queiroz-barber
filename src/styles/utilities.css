@@ -1,0 +1,278 @@
+/*
+ * Utilitários do design system. Hover só vale em aparelhos com mouse
+ * (hover: hover), e nenhuma transição usa `all`.
+ */
+
+/* Variante `reduced-transparency:` para quem pede superfícies opacas (sem blur). */
+@custom-variant reduced-transparency (@media (prefers-reduced-transparency: reduce));
+
+/*
+ * Transição dos controles: cor com `ease`, movimento com ease-out curto,
+ * para o toque parecer imediato.
+ */
+@utility transition-control {
+  transition:
+    color var(--duration-hover) ease,
+    background-color var(--duration-hover) ease,
+    border-color var(--duration-hover) ease,
+    text-decoration-color var(--duration-hover) ease,
+    box-shadow var(--duration-hover) ease,
+    scale var(--duration-press) var(--ease-out),
+    translate var(--duration-ui) var(--ease-out);
+}
+
+/*
+ * Link no meio do texto: sublinhado sempre visível, para não depender só da
+ * cor. No hover o sublinhado fica sólido e engrossa, sem trocar a cor.
+ */
+@utility link {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in oklab, currentColor 45%, transparent);
+  transition:
+    text-decoration-color var(--duration-hover) ease,
+    text-decoration-thickness var(--duration-hover) ease;
+
+  @media (hover: hover) {
+    &:hover {
+      text-decoration-color: currentColor;
+      text-decoration-thickness: 2px;
+    }
+  }
+}
+
+/*
+ * Link de navegação (header, footer). Acende no hover e ganha um sublinhado
+ * que entra pela esquerda e sai pela direita. `aria-current` marca a seção atual.
+ */
+@utility link-nav {
+  position: relative;
+  color: var(--link-nav-color, var(--color-muted));
+  transition: color var(--duration-hover) ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: -0.3em;
+    height: 1px;
+    background-color: currentColor;
+    scale: 0 1;
+    transform-origin: right;
+    transition: scale var(--duration-ui) var(--ease-out);
+  }
+
+  &[aria-current]:not([aria-current='false']) {
+    color: var(--color-foreground);
+
+    &::after {
+      scale: 1 1;
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--color-foreground);
+    }
+
+    &:hover::after {
+      scale: 1 1;
+      transform-origin: left;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &::after {
+      transition: none;
+    }
+  }
+}
+
+/*
+ * Painel em tela cheia sobre um <dialog> (menu mobile, por exemplo). Entra
+ * em 250ms e sai em 160ms: a resposta do sistema é mais rápida que a decisão
+ * do usuário. Sem suporte a transições de `display`, só aparece e some.
+ */
+@utility sheet {
+  opacity: 0;
+  translate: 0 -0.5rem;
+  transition:
+    opacity 160ms var(--ease-out),
+    translate 160ms var(--ease-out),
+    display 160ms allow-discrete,
+    overlay 160ms allow-discrete;
+
+  &[open] {
+    opacity: 1;
+    translate: 0 0;
+    transition-duration: var(--duration-ui);
+
+    @starting-style {
+      opacity: 0;
+      translate: 0 -0.5rem;
+    }
+  }
+
+  &::backdrop {
+    background: transparent;
+  }
+
+  /* Movimento reduzido: só o fade, sem deslocamento. */
+  @media (prefers-reduced-motion: reduce) {
+    translate: 0 0;
+
+    &[open] {
+      @starting-style {
+        translate: 0 0;
+      }
+    }
+  }
+}
+
+/*
+ * Item que entra em sequência dentro de um `sheet` aberto. Cada item define
+ * `--sheet-index` (0, 1, 2...), com 45ms de intervalo entre eles. Na saída
+ * todos vão juntos, sem atraso.
+ */
+@utility sheet-item {
+  opacity: 0;
+  translate: 0 0.75rem;
+  transition:
+    opacity 160ms var(--ease-out),
+    translate 160ms var(--ease-out);
+
+  [open] & {
+    opacity: 1;
+    translate: 0 0;
+    transition-duration: 400ms;
+    transition-delay: calc(60ms + var(--sheet-index, 0) * 45ms);
+
+    @starting-style {
+      opacity: 0;
+      translate: 0 0.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    translate: 0 0;
+
+    [open] & {
+      @starting-style {
+        translate: 0 0;
+      }
+    }
+  }
+}
+
+/*
+ * Lightbox da Galeria, sobre o <dialog> nativo (mesma base do `sheet`, do
+ * menu mobile): o navegador cuida do foco preso, do Esc e de tornar o resto
+ * da página inerte. Entra com fade e leve scale, em vez do slide do `sheet`.
+ */
+@utility lightbox {
+  background-color: transparent;
+  opacity: 0;
+  scale: 0.96;
+  transition:
+    opacity var(--duration-ui) var(--ease-out),
+    scale var(--duration-ui) var(--ease-out),
+    display var(--duration-ui) allow-discrete,
+    overlay var(--duration-ui) allow-discrete;
+
+  &[open] {
+    opacity: 1;
+    scale: 1;
+
+    @starting-style {
+      opacity: 0;
+      scale: 0.96;
+    }
+  }
+
+  &::backdrop {
+    background-color: color-mix(in oklab, var(--color-background) 92%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    scale: 1;
+
+    &[open] {
+      @starting-style {
+        scale: 1;
+      }
+    }
+  }
+}
+
+/* Escurece a base de uma imagem para o texto sobreposto continuar legível. */
+@utility bg-gradient-scrim {
+  background-image: linear-gradient(to bottom, transparent, var(--color-background));
+}
+
+/*
+ * Escurece o topo de uma imagem: garante a leitura do header sobre o Hero,
+ * mesmo numa foto clara (as da barbearia são). Deve cobrir mais que a altura
+ * do header, para o texto ficar no trecho mais escuro. Curva em vários
+ * pontos, sem faixa visível.
+ */
+@utility bg-gradient-scrim-top {
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--color-background) 82%, transparent) 0%,
+    color-mix(in oklab, var(--color-background) 70%, transparent) 18%,
+    color-mix(in oklab, var(--color-background) 52%, transparent) 36%,
+    color-mix(in oklab, var(--color-background) 32%, transparent) 54%,
+    color-mix(in oklab, var(--color-background) 14%, transparent) 72%,
+    transparent 100%
+  );
+}
+
+/*
+ * Fundo do Hero enquanto não existe uma foto em alta resolução da barbearia
+ * (BL-009: as fotos do Instagram disponíveis têm no máximo 672px de largura,
+ * baixas demais para um fundo em tela cheia). Um brilho assimétrico sugere
+ * profundidade sem precisar de imagem; some sozinho quando a foto real entrar.
+ */
+@utility bg-hero-glow {
+  background-image: radial-gradient(
+    60% 55% at 82% 8%,
+    color-mix(in oklab, var(--color-foreground) 12%, transparent),
+    transparent 70%
+  );
+}
+
+/*
+ * Esconde a barra de rolagem sem tirar a rolagem em si — usado no carousel
+ * de Depoimentos (BL-024): o swipe nativo continua funcionando no touch, só
+ * a barra visível some (o carousel já tem setas/bolinhas para navegar com
+ * mouse ou teclado).
+ */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Filete de luz que separa superfícies translúcidas do conteúdo. */
+@utility bg-gradient-hairline {
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklab, var(--color-foreground) 22%, transparent),
+    transparent
+  );
+}
+
+/* Select com seta própria: a nativa fica colada na borda direita. */
+.select-chevron {
+  appearance: none;
+  padding-inline-end: 2.75rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+}
