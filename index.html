@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Mesmo tom do fundo escuro (--gray-950 em src/styles/tokens.css). -->
+    <meta name="theme-color" content="#0d0d0d" />
+    <meta name="color-scheme" content="dark" />
+
+    <!--
+      Título e descrição usam só o que é certo hoje — nome, categoria e
+      cidade (ver src/data/site.ts e contact.ts). Sem slogan nem descrição
+      institucional: `site.tagline`/`site.description` ainda estão null.
+      Atualize aqui junto se esses campos forem preenchidos.
+    -->
+    <title>Vinicius Queiroz Barber</title>
+    <meta
+      name="description"
+      content="Vinicius Queiroz Barber. Agende seu horário online."
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Vinicius Queiroz Barber" />
+    <meta property="og:title" content="Vinicius Queiroz Barber" />
+    <meta
+      property="og:description"
+      content="Vinicius Queiroz Barber. Agende seu horário online."
+    />
+    <meta property="og:locale" content="pt_BR" />
+    <!-- og:image e og:url ficam de fora até existir uma imagem oficial e um domínio (BL-043). -->
+
+    <!--
+      Favicon vetorizado a partir da mesma logo usada no site (ver
+      src/components/Logo.tsx). O SVG (navegadores modernos) se adapta ao
+      tema do navegador via prefers-color-scheme; os PNGs (Safari, que não
+      lê favicon em SVG) usam fundo escuro + logo branca, a mesma combinação
+      do tema do site (--gray-950 / branco).
+    -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <!-- Manifest só para o Web Push no iPhone/iPad (o app precisa estar na Tela de Início). Não muda o site. -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
