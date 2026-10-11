@@ -32,3 +32,9 @@ export const clientSupabase = createClient<Database>(url, publishableKey, {
 })
 
 export const GALLERY_BUCKET = 'gallery'
+
+/**
+ * Cache das fotos enviadas (1 ano). O nome de cada arquivo leva um timestamp e nunca é
+ * reutilizado, então o conteúdo não muda sob a mesma URL. O padrão do Storage é 1 hora.
+ */
+export const PHOTO_CACHE_CONTROL = '31536000'

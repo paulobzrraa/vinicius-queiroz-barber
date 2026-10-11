@@ -8,9 +8,46 @@
  */
 export const TIMEZONE = 'America/Fortaleza'
 
+/*
+ * Formatadores criados uma vez só. Construir um Intl.DateTimeFormat é caro, e o
+ * calendário formata um rótulo por dia a cada render (são ~31 por mês).
+ */
+const dayKeyFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: TIMEZONE })
+const weekdayShortFormatter = new Intl.DateTimeFormat('pt-BR', {
+  timeZone: 'UTC',
+  weekday: 'short',
+})
+const dayLabelFormatter = new Intl.DateTimeFormat('pt-BR', {
+  timeZone: 'UTC',
+  day: '2-digit',
+  month: 'long',
+})
+const weekdayLongFormatter = new Intl.DateTimeFormat('pt-BR', {
+  timeZone: 'UTC',
+  weekday: 'long',
+})
+const monthLabelFormatter = new Intl.DateTimeFormat('pt-BR', {
+  timeZone: 'UTC',
+  month: 'long',
+  year: 'numeric',
+})
+const timeLabelFormatter = new Intl.DateTimeFormat('pt-BR', {
+  timeZone: TIMEZONE,
+  hour: '2-digit',
+  minute: '2-digit',
+})
+const dateTimeLabelFormatter = new Intl.DateTimeFormat('pt-BR', {
+  timeZone: TIMEZONE,
+  weekday: 'long',
+  day: '2-digit',
+  month: 'long',
+  hour: '2-digit',
+  minute: '2-digit',
+})
+
 /** Data de hoje em Fortaleza, como chave YYYY-MM-DD. */
 export function todayKey(): string {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: TIMEZONE }).format(new Date())
+  return dayKeyFormatter.format(new Date())
 }
 
 function parseDateKey(key: string): { year: number; month: number; day: number } {
@@ -65,50 +102,27 @@ export function startOfMonth(key: string): string {
 }
 
 export function formatWeekdayShort(key: string): string {
-  return new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC', weekday: 'short' }).format(
-    dateFromKey(key),
-  )
+  return weekdayShortFormatter.format(dateFromKey(key))
 }
 
 export function formatDayLabel(key: string): string {
-  return new Intl.DateTimeFormat('pt-BR', {
-    timeZone: 'UTC',
-    day: '2-digit',
-    month: 'long',
-  }).format(dateFromKey(key))
+  return dayLabelFormatter.format(dateFromKey(key))
 }
 
 export function formatWeekdayLong(key: string): string {
-  return new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC', weekday: 'long' }).format(
-    dateFromKey(key),
-  )
+  return weekdayLongFormatter.format(dateFromKey(key))
 }
 
 export function formatMonthLabel(key: string): string {
-  return new Intl.DateTimeFormat('pt-BR', {
-    timeZone: 'UTC',
-    month: 'long',
-    year: 'numeric',
-  }).format(dateFromKey(key))
+  return monthLabelFormatter.format(dateFromKey(key))
 }
 
 /** Horário local (Fortaleza) de um instante absoluto (timestamptz do banco). */
 export function formatTimeLabel(iso: string): string {
-  return new Intl.DateTimeFormat('pt-BR', {
-    timeZone: TIMEZONE,
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(new Date(iso))
+  return timeLabelFormatter.format(new Date(iso))
 }
 
 /** Dia + horário local de um instante absoluto, para telas de confirmação/sucesso. */
 export function formatDateTimeLabel(iso: string): string {
-  return new Intl.DateTimeFormat('pt-BR', {
-    timeZone: TIMEZONE,
-    weekday: 'long',
-    day: '2-digit',
-    month: 'long',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(new Date(iso))
+  return dateTimeLabelFormatter.format(new Date(iso))
 }

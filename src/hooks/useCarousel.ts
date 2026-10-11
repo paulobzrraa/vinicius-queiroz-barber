@@ -62,12 +62,25 @@ export function useCarousel({
       setCanNext(!atEnd)
     }
 
+    // No máximo uma medição por quadro: o scroll dispara vários eventos por quadro, e cada medição
+    // lê a posição de todos os cards.
+    let frame = 0
+    function schedule() {
+      if (!frame) {
+        frame = requestAnimationFrame(() => {
+          frame = 0
+          sync()
+        })
+      }
+    }
+
     sync()
-    track.addEventListener('scroll', sync, { passive: true })
-    window.addEventListener('resize', sync)
+    track.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
     return () => {
-      track.removeEventListener('scroll', sync)
-      window.removeEventListener('resize', sync)
+      cancelAnimationFrame(frame)
+      track.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
     }
   }, [itemCount])
 

@@ -1,4 +1,4 @@
-import { motion, useReducedMotion, useScroll, useSpring } from 'motion/react'
+import { m, useReducedMotion, useScroll, useSpring } from 'motion/react'
 
 /**
  * Barra de progresso no topo: uma faixa teal que cresce conforme a página
@@ -12,7 +12,7 @@ export function ScrollProgress() {
   if (reduced) return null
 
   return (
-    <motion.div
+    <m.div
       aria-hidden="true"
       style={{ scaleX }}
       className="fixed inset-x-0 top-0 z-[60] h-[3px] origin-left bg-accent shadow-glow"

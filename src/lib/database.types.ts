@@ -38,11 +38,47 @@ export type ClientLoginResult =
       }[]
     }
 
-interface Table<Row, Insert, Update = Partial<Insert>> {
+/**
+ * Ligação por chave estrangeira. Declarada onde existe, o select embutido do PostgREST
+ * (ex.: `professional:professionals(name)`) já sai tipado, sem cast.
+ */
+interface Relationship {
+  foreignKeyName: string
+  columns: string[]
+  isOneToOne?: boolean
+  referencedRelation: string
+  referencedColumns: string[]
+}
+
+interface Table<Row, Insert, Update = Partial<Insert>, Relationships extends Relationship[] = []> {
   Row: Row
   Insert: Insert
   Update: Update
-  Relationships: []
+  Relationships: Relationships
+}
+
+/* Inserts das tabelas com ligação embutida (o Update é o mesmo, todos opcionais). */
+type AppointmentInsert = {
+  id?: string
+  access_token?: string
+  client_name: string
+  client_phone: string
+  client_email?: string | null
+  client_account_id?: string | null
+  professional_id: string
+  starts_at: string
+  ends_at: string
+  status?: AppointmentStatus
+  source?: AppointmentSource
+  payment_method?: PaymentMethod | null
+  created_at?: string
+}
+
+type AppointmentServiceInsert = {
+  appointment_id: string
+  service_id: string
+  price?: number | null
+  duration_minutes?: number | null
 }
 
 export interface Database {
@@ -286,21 +322,17 @@ export interface Database {
           payment_method: PaymentMethod | null
           created_at: string
         },
-        {
-          id?: string
-          access_token?: string
-          client_name: string
-          client_phone: string
-          client_email?: string | null
-          client_account_id?: string | null
-          professional_id: string
-          starts_at: string
-          ends_at: string
-          status?: AppointmentStatus
-          source?: AppointmentSource
-          payment_method?: PaymentMethod | null
-          created_at?: string
-        }
+        AppointmentInsert,
+        Partial<AppointmentInsert>,
+        [
+          {
+            foreignKeyName: 'appointments_professional_id_fkey'
+            columns: ['professional_id']
+            isOneToOne: false
+            referencedRelation: 'professionals'
+            referencedColumns: ['id']
+          },
+        ]
       >
       appointment_services: Table<
         {
@@ -309,12 +341,24 @@ export interface Database {
           price: number | null
           duration_minutes: number | null
         },
-        {
-          appointment_id: string
-          service_id: string
-          price?: number | null
-          duration_minutes?: number | null
-        }
+        AppointmentServiceInsert,
+        Partial<AppointmentServiceInsert>,
+        [
+          {
+            foreignKeyName: 'appointment_services_appointment_id_fkey'
+            columns: ['appointment_id']
+            isOneToOne: false
+            referencedRelation: 'appointments'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'appointment_services_service_id_fkey'
+            columns: ['service_id']
+            isOneToOne: false
+            referencedRelation: 'services'
+            referencedColumns: ['id']
+          },
+        ]
       >
       appointment_status_history: Table<
         {

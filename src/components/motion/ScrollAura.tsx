@@ -1,10 +1,14 @@
-import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { m, useReducedMotion, useScroll, useTransform } from 'motion/react'
 
 /**
  * Luzes de fundo fixas que se deslocam em velocidades diferentes conforme a
  * página rola (paralaxe em camadas). Dão profundidade e um ar de "palco" à
  * página inteira, sem imagem. Só `transform`, e desligado para quem pede menos
  * movimento.
+ *
+ * Sem `blur` nas camadas: o halo (bg-glow-halo) já desvanece até a borda, e um
+ * filtro de blur de 64px sobre um disco animado a cada rolagem custa muito a GPU
+ * em telas de alta densidade.
  */
 export function ScrollAura() {
   const reduced = useReducedMotion()
@@ -15,13 +19,13 @@ export function ScrollAura() {
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <motion.div
+      <m.div
         style={{ y: yA, rotate: rot }}
-        className="absolute -top-40 -left-40 size-[38rem] rounded-full bg-glow-halo opacity-70 blur-3xl"
+        className="absolute -top-40 -left-40 size-[38rem] rounded-full bg-glow-halo opacity-70"
       />
-      <motion.div
+      <m.div
         style={{ y: yB }}
-        className="absolute top-[45%] -right-48 size-[34rem] rounded-full bg-glow-halo opacity-50 blur-3xl"
+        className="absolute top-[45%] -right-48 size-[34rem] rounded-full bg-glow-halo opacity-50"
       />
     </div>
   )

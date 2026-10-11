@@ -288,6 +288,28 @@
 }
 
 /*
+ * Brilho forte atrás da logo: um núcleo mais claro que o halo comum. Sem filtro, para que
+ * o movimento (transform e opacidade) continue barato.
+ */
+@utility bg-glow-bloom {
+  background-image: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--color-glow) 60%, transparent),
+    color-mix(in oklab, var(--color-glow) 24%, transparent) 45%,
+    transparent 100%
+  );
+}
+
+/*
+ * Grão sutil sobre fundos escuros. Ruído fractal em SVG usado como imagem de
+ * fundo: o navegador o rasteriza uma vez e repete o azulejo. Antes era um
+ * filtro SVG inline sobre a tela inteira, recalculado a cada pintura (rolagem).
+ */
+@utility grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/*
  * Botão em forma de placa de barbearia: cantos chanfrados, borda de cromo e
  * um brilho que cruza a placa ao passar o mouse. A borda é o fundo do próprio
  * elemento; o miolo é o ::before, inset em 1px, então o chanfro e a borda
@@ -395,16 +417,18 @@
  * animation-timeline: view(). Sem suporte no navegador, o título aparece normal.
  */
 @supports (animation-timeline: view()) {
+  /*
+   * Só opacidade e transform: animar `filter` (o blur de antes) repinta cada título
+   * a cada quadro da rolagem, caro em iPhone e Android antigo.
+   */
   @keyframes title-reveal {
     from {
       opacity: 0;
       transform: translateY(2.5rem) scale(0.97);
-      filter: blur(6px);
     }
     to {
       opacity: 1;
       transform: translateY(0) scale(1);
-      filter: blur(0);
     }
   }
 
@@ -412,10 +436,32 @@
     animation: title-reveal linear both;
     animation-timeline: view();
     animation-range: entry 0% cover 35%;
+    /*
+     * Mantém o visual de antes: o `fill: both` já deixava o filter em blur(0), o que
+     * anulava o brilho do text-chrome (drop-shadow). Sem isto, o brilho apareceria.
+     */
+    filter: none;
+  }
+
+  /*
+   * Conteúdo da página (textos, cards, fotos) com o mesmo movimento dos títulos. Ligado
+   * por classe nos componentes. Não vale dentro de carrossel: a linha do tempo fica presa
+   * ao rolar do próprio carrossel, que não rola na vertical.
+   */
+  .scroll-reveal {
+    animation: title-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 35%;
+  }
+
+  /* Um bloco que já anima leva o filho junto: o filho não anima de novo (o deslocamento dobraria). */
+  .scroll-reveal :is(.scroll-reveal, .scroll-title) {
+    animation: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .scroll-title {
+    .scroll-title,
+    .scroll-reveal {
       animation: none;
     }
   }

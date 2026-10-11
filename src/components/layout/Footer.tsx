@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 
 import { fadeIn } from '@/animations'
 import { Logo } from '@/components/Logo'
@@ -26,7 +26,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border">
       <Container className="py-16">
-        <motion.div
+        <m.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.4 }}
@@ -98,7 +98,7 @@ export function Footer() {
               />
             )}
           </div>
-        </motion.div>
+        </m.div>
 
         <div className="mt-16 border-t border-border pt-8">
           <Text size="caption" tone="muted">

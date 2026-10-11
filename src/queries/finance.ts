@@ -90,6 +90,9 @@ export interface CompletedAppointmentRevenue {
 
 const revenueKey = ['revenue']
 const revenueRangeKey = (startIso: string, endIso: string) => [...revenueKey, startIso, endIso]
+// Colunas do select embutido: agendamento, profissional, e serviços com o preço gravado na reserva.
+const revenueSelect =
+  'id, starts_at, professional_id, payment_method, professional:professionals(name), appointment_services(service_id, price, services(name))'
 
 /**
  * Agendamentos concluídos num intervalo, com o valor somado dos serviços —
@@ -101,59 +104,27 @@ export function useRevenueInRange(startIso: string, endIso: string) {
   return useQuery({
     queryKey: revenueRangeKey(startIso, endIso),
     queryFn: async (): Promise<CompletedAppointmentRevenue[]> => {
-      const { data: appointments, error } = await supabase
+      // Uma ida ao banco, com profissional, serviços e preço embutidos (ver fetchAppointmentsInRange).
+      const { data, error } = await supabase
         .from('appointments')
-        .select('id, starts_at, professional_id, payment_method')
+        .select(revenueSelect)
         .gte('starts_at', startIso)
         .lt('starts_at', endIso)
         .eq('status', 'completed')
         .order('starts_at')
       if (error) throw error
-      if (appointments.length === 0) return []
 
-      const appointmentIds = appointments.map((appointment) => appointment.id)
-
-      const [{ data: professionals }, { data: appointmentServices, error: servicesError }] =
-        await Promise.all([
-          supabase.from('professionals').select('id, name'),
-          supabase
-            .from('appointment_services')
-            .select('appointment_id, service_id, price')
-            .in('appointment_id', appointmentIds),
-        ])
-      if (servicesError) throw servicesError
-
-      const serviceIds = [...new Set((appointmentServices ?? []).map((row) => row.service_id))]
-      const { data: serviceRows } =
-        serviceIds.length > 0
-          ? await supabase.from('services').select('id, name').in('id', serviceIds)
-          : { data: [] }
-
-      const professionalNameById = new Map(professionals?.map((row) => [row.id, row.name]))
-      const serviceNameById = new Map(serviceRows?.map((row) => [row.id, row.name]))
-
-      const servicesByAppointment = new Map<
-        string,
-        { serviceId: string; serviceName: string; price: number }[]
-      >()
-      for (const row of appointmentServices ?? []) {
-        servicesByAppointment.set(row.appointment_id, [
-          ...(servicesByAppointment.get(row.appointment_id) ?? []),
-          {
-            serviceId: row.service_id,
-            serviceName: serviceNameById.get(row.service_id) ?? row.service_id,
-            price: row.price ?? 0,
-          },
-        ])
-      }
-
-      return appointments.map((appointment) => {
-        const services = servicesByAppointment.get(appointment.id) ?? []
+      return data.map((appointment) => {
+        const services = appointment.appointment_services.map((row) => ({
+          serviceId: row.service_id,
+          serviceName: row.services?.name ?? row.service_id,
+          price: row.price ?? 0,
+        }))
         return {
           id: appointment.id,
           startsAt: appointment.starts_at,
           professionalId: appointment.professional_id,
-          professionalName: professionalNameById.get(appointment.professional_id) ?? '—',
+          professionalName: appointment.professional?.name ?? '—',
           paymentMethod: appointment.payment_method,
           services,
           total: services.reduce((sum, item) => sum + item.price, 0),

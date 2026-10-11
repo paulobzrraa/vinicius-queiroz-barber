@@ -17,58 +17,31 @@ export interface AppointmentWithDetails extends AppointmentRow {
 const baseKey = ['admin_appointments']
 const rangeKey = (startIso: string, endIso: string) => [...baseKey, startIso, endIso]
 
+/*
+ * Uma ida ao banco só: o profissional e os serviços vêm embutidos, resolvidos pelas
+ * chaves estrangeiras. Antes eram 3 a 4 requisições, e a última mandava todos os ids
+ * numa lista `in(...)` na URL, que ficava longa num mês cheio.
+ */
+const appointmentDetailsSelect =
+  '*, professional:professionals(name), appointment_services(service_id, services(name))'
+
 async function fetchAppointmentsInRange(
   startIso: string,
   endIso: string,
 ): Promise<AppointmentWithDetails[]> {
-  const { data: appointments, error } = await supabase
+  const { data, error } = await supabase
     .from('appointments')
-    .select('*')
+    .select(appointmentDetailsSelect)
     .gte('starts_at', startIso)
     .lt('starts_at', endIso)
     .order('starts_at')
   if (error) throw error
-  if (appointments.length === 0) return []
 
-  const appointmentIds = appointments.map((appointment) => appointment.id)
-
-  const [{ data: professionals }, { data: appointmentServices, error: servicesError }] =
-    await Promise.all([
-      supabase.from('professionals').select('id, name'),
-      supabase
-        .from('appointment_services')
-        .select('appointment_id, service_id')
-        .in('appointment_id', appointmentIds),
-    ])
-  if (servicesError) throw servicesError
-
-  const serviceIds = [...new Set((appointmentServices ?? []).map((row) => row.service_id))]
-  const { data: services } =
-    serviceIds.length > 0
-      ? await supabase.from('services').select('id, name').in('id', serviceIds)
-      : { data: [] }
-
-  const professionalNameById = new Map(professionals?.map((row) => [row.id, row.name]))
-  const serviceNameById = new Map(services?.map((row) => [row.id, row.name]))
-
-  const serviceIdsByAppointment = new Map<string, string[]>()
-  const serviceNamesByAppointment = new Map<string, string[]>()
-  for (const row of appointmentServices ?? []) {
-    serviceIdsByAppointment.set(row.appointment_id, [
-      ...(serviceIdsByAppointment.get(row.appointment_id) ?? []),
-      row.service_id,
-    ])
-    serviceNamesByAppointment.set(row.appointment_id, [
-      ...(serviceNamesByAppointment.get(row.appointment_id) ?? []),
-      serviceNameById.get(row.service_id) ?? row.service_id,
-    ])
-  }
-
-  return appointments.map((appointment) => ({
+  return data.map(({ professional, appointment_services, ...appointment }) => ({
     ...appointment,
-    professionalName: professionalNameById.get(appointment.professional_id) ?? '—',
-    serviceIds: serviceIdsByAppointment.get(appointment.id) ?? [],
-    serviceNames: serviceNamesByAppointment.get(appointment.id) ?? [],
+    professionalName: professional?.name ?? '—',
+    serviceIds: appointment_services.map((row) => row.service_id),
+    serviceNames: appointment_services.map((row) => row.services?.name ?? row.service_id),
   }))
 }
 

@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { GALLERY_BUCKET, supabase } from '@/lib/supabase'
+import { GALLERY_BUCKET, PHOTO_CACHE_CONTROL, supabase } from '@/lib/supabase'
 import type { Database } from '@/lib/database.types'
+import { prepareImageForUpload } from '@/utils/imageUpload'
 
 export type ProfessionalRow = Database['public']['Tables']['professionals']['Row']
 type ProfessionalInsert = Database['public']['Tables']['professionals']['Insert']
@@ -71,16 +72,23 @@ export function useDeleteProfessional() {
   })
 }
 
-/** Envia a foto para o bucket "gallery" (mesmo bucket da galeria, path próprio) e devolve a URL pública. */
+/** Lado maior da foto de profissional: é exibida num círculo de até ~144 px (com folga para retina). */
+const PROFESSIONAL_PHOTO_MAX_SIDE = 800
+
+/** Envia a foto para o bucket "gallery" (mesmo bucket da galeria, path próprio; redimensionada, em WebP) e devolve a URL pública. */
 export function useUploadProfessionalPhoto() {
   return useMutation({
     mutationFn: async ({ id, file }: { id: string; file: File }) => {
-      const extension = file.name.split('.').pop() ?? 'jpg'
-      const path = `professionals/${id}-${Date.now()}.${extension}`
+      const prepared = await prepareImageForUpload(file, PROFESSIONAL_PHOTO_MAX_SIDE)
+      const path = `professionals/${id}-${Date.now()}.${prepared.extension}`
 
       const { error: uploadError } = await supabase.storage
         .from(GALLERY_BUCKET)
-        .upload(path, file, { upsert: true })
+        .upload(path, prepared.file, {
+          upsert: true,
+          contentType: prepared.contentType,
+          cacheControl: PHOTO_CACHE_CONTROL,
+        })
       if (uploadError) throw uploadError
 
       const { data } = supabase.storage.from(GALLERY_BUCKET).getPublicUrl(path)

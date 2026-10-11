@@ -1,5 +1,5 @@
 import { ArrowUpRight, AtSign, Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import type { ReactNode } from 'react'
 
 import { fadeInUp } from '@/animations'
@@ -32,7 +32,7 @@ interface ContactCardProps {
  */
 function ContactCard({ icon, label, cta, children }: ContactCardProps) {
   return (
-    <Card interactive={Boolean(cta)} className="flex h-full flex-col">
+    <Card interactive={Boolean(cta)} className="scroll-reveal flex h-full flex-col">
       <div aria-hidden="true" className="text-muted">
         {icon}
       </div>
@@ -90,7 +90,7 @@ export function Contact() {
           as="ul"
           className="mt-block grid gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:[&>*:last-child:nth-child(odd)]:col-span-2 lg:[&>*:last-child:nth-child(odd)]:col-span-1"
         >
-          <motion.li variants={fadeInUp}>
+          <m.li variants={fadeInUp}>
             <ContactCard
               icon={<MapPin className="size-6" />}
               label="Endereço"
@@ -104,10 +104,10 @@ export function Contact() {
                 {formatAddress(contact)}
               </Text>
             </ContactCard>
-          </motion.li>
+          </m.li>
 
           {phone && (
-            <motion.li variants={fadeInUp}>
+            <m.li variants={fadeInUp}>
               <ContactCard
                 icon={<Phone className="size-6" />}
                 label="Telefone"
@@ -117,11 +117,11 @@ export function Contact() {
                   {formatPhone(phone)}
                 </Text>
               </ContactCard>
-            </motion.li>
+            </m.li>
           )}
 
           {whatsapp && (
-            <motion.li variants={fadeInUp}>
+            <m.li variants={fadeInUp}>
               <ContactCard
                 icon={<MessageCircle className="size-6" />}
                 label="WhatsApp"
@@ -135,11 +135,11 @@ export function Contact() {
                   {formatPhone(whatsapp)}
                 </Text>
               </ContactCard>
-            </motion.li>
+            </m.li>
           )}
 
           {email && (
-            <motion.li variants={fadeInUp}>
+            <m.li variants={fadeInUp}>
               <ContactCard
                 icon={<Mail className="size-6" />}
                 label="E-mail"
@@ -149,11 +149,11 @@ export function Contact() {
                   {email}
                 </Text>
               </ContactCard>
-            </motion.li>
+            </m.li>
           )}
 
           {hoursLines.length > 0 && (
-            <motion.li variants={fadeInUp}>
+            <m.li variants={fadeInUp}>
               <ContactCard icon={<Clock className="size-6" />} label="Horário de funcionamento">
                 <ul className="space-y-1">
                   {hoursLines.map((line) => (
@@ -167,11 +167,11 @@ export function Contact() {
                   ))}
                 </ul>
               </ContactCard>
-            </motion.li>
+            </m.li>
           )}
 
           {socials.length > 0 && (
-            <motion.li variants={fadeInUp}>
+            <m.li variants={fadeInUp}>
               <ContactCard icon={<AtSign className="size-6" />} label="Redes sociais">
                 <ul className="space-y-3">
                   {socials.map((social) => (
@@ -193,7 +193,7 @@ export function Contact() {
                   ))}
                 </ul>
               </ContactCard>
-            </motion.li>
+            </m.li>
           )}
         </Reveal>
       </Container>

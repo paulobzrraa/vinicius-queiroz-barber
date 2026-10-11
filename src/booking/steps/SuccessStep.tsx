@@ -1,5 +1,5 @@
 import { CalendarPlus, Check, Copy } from 'lucide-react'
-import { motion, useReducedMotion } from 'motion/react'
+import { m, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 
 import { fadeInUp, sealContent } from '@/animations'
@@ -73,13 +73,13 @@ export function SuccessStep({ appointment, serviceNames, professionalName }: Suc
     <div className="flex flex-col items-center gap-8 text-center">
       <StatusSeal variant="success" animated={animated} />
 
-      <motion.div
+      <m.div
         initial={animated ? 'hidden' : false}
         animate="visible"
         variants={sealContent}
         className="flex w-full flex-col items-center gap-8"
       >
-        <motion.div variants={fadeInUp}>
+        <m.div variants={fadeInUp}>
           <div ref={headingRef} tabIndex={-1} className="outline-none">
             <Heading as="h1" size="title-3">
               Agendamento confirmado
@@ -88,9 +88,9 @@ export function SuccessStep({ appointment, serviceNames, professionalName }: Suc
           <Text size="body" tone="muted" className="mt-2">
             Tudo certo, {firstName}. Esperamos você!
           </Text>
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           variants={fadeInUp}
           className="w-full rounded-card border border-border bg-surface p-card text-start"
         >
@@ -108,9 +108,9 @@ export function SuccessStep({ appointment, serviceNames, professionalName }: Suc
               </DetailRow>
             )}
           </div>
-        </motion.div>
+        </m.div>
 
-        <motion.div variants={fadeInUp} className="flex w-full flex-col gap-3">
+        <m.div variants={fadeInUp} className="flex w-full flex-col gap-3">
           <Button href={manageUrl} size="lg">
             Ver meu agendamento
           </Button>
@@ -132,9 +132,9 @@ export function SuccessStep({ appointment, serviceNames, professionalName }: Suc
               {copied ? 'Link copiado' : 'Copiar link'}
             </Button>
           </div>
-        </motion.div>
+        </m.div>
 
-        <motion.div variants={fadeInUp} className="flex flex-col items-center gap-2">
+        <m.div variants={fadeInUp} className="flex flex-col items-center gap-2">
           <Text size="caption" tone="muted" className="max-w-text">
             {appointment.client_account_id
               ? 'Consulte depois em Meus agendamentos, com seu e-mail e senha.'
@@ -144,8 +144,8 @@ export function SuccessStep({ appointment, serviceNames, professionalName }: Suc
                   ? 'A senha não confere com a conta desse e-mail, então este agendamento não aparece em Meus agendamentos. Guarde o link para ver, reagendar ou cancelar.'
                   : 'Guarde o link para ver, reagendar ou cancelar.'}
           </Text>
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
     </div>
   )
 }

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useLocation, useParams } from 'react-router-dom'
 
-import { motion, useReducedMotion } from 'motion/react'
+import { m, useReducedMotion } from 'motion/react'
 
 import { fadeInUp, sealContent } from '@/animations'
 import { StatusSeal } from '@/components/StatusSeal'
@@ -101,26 +101,26 @@ export function AppointmentLookupPage() {
               // Acabou de cancelar: o mesmo selo da confirmação do agendamento, com um X.
               <div className="flex flex-col items-center gap-6 text-center">
                 <StatusSeal variant="canceled" animated={animated} />
-                <motion.div
+                <m.div
                   initial={animated ? 'hidden' : false}
                   animate="visible"
                   variants={sealContent}
                   className="flex flex-col items-center gap-6"
                 >
-                  <motion.div variants={fadeInUp}>
+                  <m.div variants={fadeInUp}>
                     <Heading as="h1" size="title-3">
                       Agendamento cancelado
                     </Heading>
                     <Text size="body" tone="muted" className="mt-2 capitalize">
                       {formatDateTimeLabel(data.appointment.starts_at)}
                     </Text>
-                  </motion.div>
-                  <motion.div variants={fadeInUp}>
+                  </m.div>
+                  <m.div variants={fadeInUp}>
                     <Button href="/agendar" variant="outline">
                       Reservar outro horário
                     </Button>
-                  </motion.div>
-                </motion.div>
+                  </m.div>
+                </m.div>
               </div>
             ) : (
               <div>

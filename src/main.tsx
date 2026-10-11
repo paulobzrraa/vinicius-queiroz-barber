@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { MotionConfig } from 'motion/react'
+import { domAnimation, LazyMotion, MotionConfig } from 'motion/react'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
@@ -36,7 +36,14 @@ createRoot(root).render(
       <BrowserRouter>
         {/* reducedMotion="user": toda animação do Motion respeita prefers-reduced-motion (BL-036). */}
         <MotionConfig reducedMotion="user">
-          <AppRoutes />
+          {/*
+            LazyMotion carrega só os recursos de animação usados (domAnimation: animate,
+            variants, whileInView), não o Motion inteiro (arrastar e layout ficam de fora).
+            Por isso os componentes são `m.*`, não `motion.*`; strict acusa o uso errado em dev.
+          */}
+          <LazyMotion features={domAnimation} strict>
+            <AppRoutes />
+          </LazyMotion>
         </MotionConfig>
       </BrowserRouter>
     </QueryClientProvider>

@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Expand, ImageOff, X } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { fadeInUp, imageReveal } from '@/animations'
@@ -46,14 +46,14 @@ function GalleryMedia({ image }: { image: GalleryImageRow }) {
       alt={image.alt}
       loading="lazy"
       decoding="async"
-      className="h-full w-full object-cover transition-control motion-safe:group-hover:scale-105"
+      className="scroll-reveal h-full w-full object-cover transition-control motion-safe:group-hover:scale-105"
     />
   )
 }
 
 function GalleryCard({ image, onOpen }: { image: GalleryImageRow; onOpen: () => void }) {
   return (
-    <motion.button
+    <m.button
       type="button"
       onClick={onOpen}
       variants={imageReveal}
@@ -73,7 +73,7 @@ function GalleryCard({ image, onOpen }: { image: GalleryImageRow; onOpen: () => 
           </div>
         </div>
       </div>
-    </motion.button>
+    </m.button>
   )
 }
 
@@ -186,7 +186,7 @@ function Lightbox({ images, index, onClose, onNavigate }: LightboxProps) {
             className="flex h-full w-full flex-col items-center justify-center gap-4 px-14 py-16 sm:px-20"
           >
             <AnimatePresence mode="wait" initial={false}>
-              <motion.figure
+              <m.figure
                 key={image.id}
                 initial="hidden"
                 animate="visible"
@@ -209,7 +209,7 @@ function Lightbox({ images, index, onClose, onNavigate }: LightboxProps) {
                 <Text as="p" size="small" tone="muted">
                   {image.alt} — {index !== null ? index + 1 : 0} / {images.length}
                 </Text>
-              </motion.figure>
+              </m.figure>
             </AnimatePresence>
           </div>
         </div>

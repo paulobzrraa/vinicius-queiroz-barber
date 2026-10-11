@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 
 import { easing, sealDraw as SEAL_DRAW } from '@/animations'
 
@@ -23,7 +23,7 @@ export function StatusSeal({ variant, animated }: StatusSealProps) {
   return (
     <div className="relative size-24">
       {animated && (
-        <motion.span
+        <m.span
           aria-hidden="true"
           className="absolute inset-0 rounded-full border border-accent"
           initial={{ opacity: 0.5, transform: 'scale(1)' }}
@@ -33,7 +33,7 @@ export function StatusSeal({ variant, animated }: StatusSealProps) {
       )}
 
       <svg viewBox="0 0 96 96" fill="none" aria-hidden="true" className="relative size-full">
-        <motion.circle
+        <m.circle
           cx="48"
           cy="48"
           r="45"
@@ -56,7 +56,7 @@ export function StatusSeal({ variant, animated }: StatusSealProps) {
           }}
         />
         {strokes.map((d, index) => (
-          <motion.path
+          <m.path
             key={d}
             d={d}
             strokeWidth="5"

@@ -18,7 +18,7 @@ export function About() {
           <div>
             <Heading id={`${sectionIds.about}-title`}>Sobre Nós</Heading>
             {site?.about_body && (
-              <Text size="lead" tone="muted" className="mx-auto mt-block max-w-text">
+              <Text size="lead" tone="muted" className="scroll-reveal mx-auto mt-block max-w-text">
                 {site.about_body}
               </Text>
             )}
@@ -28,7 +28,9 @@ export function About() {
             <img
               src={site.about_gif_url}
               alt=""
-              className="h-auto w-[22rem] max-w-full rounded-media"
+              loading="lazy"
+              decoding="async"
+              className="scroll-reveal h-auto w-[22rem] max-w-full rounded-media"
             />
           )}
         </div>

@@ -3,9 +3,11 @@ import { ScrollAura } from '@/components/motion/ScrollAura'
 import { ScrollProgress } from '@/components/motion/ScrollProgress'
 import { useBookingSettings } from '@/queries/booking'
 import { useContactSettings, useOpeningHours, useSocialLinks } from '@/queries/contact'
+import { useActiveProfessionals } from '@/queries/professionals'
 import { useGalleryImages } from '@/queries/gallery'
 import { useActiveServices } from '@/queries/services'
 import { useSiteSettings } from '@/queries/site'
+import { useTestimonials } from '@/queries/testimonials'
 import {
   About,
   Booking,
@@ -37,6 +39,11 @@ export function App() {
   const booking = useBookingSettings()
   const services = useActiveServices()
   const gallery = useGalleryImages()
+
+  // Seções opcionais: a consulta sai junto com as do gate, não numa segunda rodada quando as
+  // seções montam. Ficam fora do `loading`, então um erro nelas não deixa a página em branco.
+  useActiveProfessionals()
+  useTestimonials()
 
   const loading = [site, contact, hours, socials, booking, services, gallery].some(
     (query) => query.isLoading,

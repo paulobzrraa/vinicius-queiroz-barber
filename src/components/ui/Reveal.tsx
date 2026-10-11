@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import type { ReactNode } from 'react'
 
 import { staggerContainer } from '@/animations'
@@ -26,6 +26,6 @@ export function Reveal({ as = 'div', amount = 0.2, className, children }: Reveal
     children,
   }
 
-  if (as === 'ul') return <motion.ul {...animation} />
-  return <motion.div {...animation} />
+  if (as === 'ul') return <m.ul {...animation} />
+  return <m.div {...animation} />
 }

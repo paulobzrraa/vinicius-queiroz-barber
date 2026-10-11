@@ -29,6 +29,17 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <!-- Manifest só para o Web Push no iPhone/iPad (o app precisa estar na Tela de Início). Não muda o site. -->
     <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Conexão com o Supabase aberta antes do JS: a primeira consulta não espera DNS/TLS. -->
+    <link rel="preconnect" href="%VITE_SUPABASE_URL%" crossorigin />
+    <!-- Logo da primeira tela (LCP): baixa em paralelo ao JS, não só depois de a página montar (src/data/brand.ts). -->
+    <link
+      rel="preload"
+      href="/brand/logo-color.webp"
+      as="image"
+      type="image/webp"
+      fetchpriority="high"
+    />
   </head>
   <body>
     <div id="root"></div>

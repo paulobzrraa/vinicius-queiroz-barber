@@ -1,4 +1,4 @@
-import logo from '@/assets/brand/logo-color.png'
+import { LOGO_SRC } from '@/data/brand'
 import { useSiteSettings } from '@/queries/site'
 import { cn } from '@/utils/cn'
 
@@ -16,7 +16,7 @@ export function Logo({ className, id }: { className?: string; id?: string }) {
   return (
     <img
       id={id}
-      src={logo}
+      src={LOGO_SRC}
       alt={site?.name ?? 'Vinicius Queiroz Barber'}
       width={600}
       height={600}

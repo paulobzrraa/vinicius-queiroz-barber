@@ -1,7 +1,7 @@
 import { ArrowLeft } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 
 import { fadeInUp } from '@/animations'
 import { Heading, IconButton, Text } from '@/components/ui'
@@ -39,7 +39,7 @@ export function StepShell({
   }, [title])
 
   return (
-    <motion.div
+    <m.div
       key={title}
       initial="hidden"
       animate="visible"
@@ -72,6 +72,6 @@ export function StepShell({
       {children}
 
       {footer && <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">{footer}</div>}
-    </motion.div>
+    </m.div>
   )
 }

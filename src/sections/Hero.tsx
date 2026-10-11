@@ -2,19 +2,19 @@ import { ChevronDown } from 'lucide-react'
 import {
   type AnimationPlaybackControls,
   animate,
-  motion,
+  m,
   useMotionValue,
   useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
 } from 'motion/react'
-import { type PointerEvent, useEffect, useId, useRef } from 'react'
+import { type PointerEvent, useEffect, useRef } from 'react'
 
 import { fadeIn, fadeInUp, staggerContainer } from '@/animations'
-import logo from '@/assets/brand/logo-color.png'
 import { Button, Container, Section } from '@/components/ui'
 import { sectionIds } from '@/data'
+import { LOGO_SRC } from '@/data/brand'
 import { useSiteSettings } from '@/queries/site'
 import { type HeroFocus, heroFocusStyle, parseHeroFocus } from '@/utils/heroPhoto'
 
@@ -52,7 +52,6 @@ function HeroBackdrop({
   desktop: HeroFocus
   mobile: HeroFocus
 }) {
-  const filterId = useId()
   const reducedMotion = useReducedMotion()
   const { scrollY } = useScroll()
   const glowY = useTransform(scrollY, [0, 1000], [0, reducedMotion ? 0 : 70])
@@ -61,7 +60,7 @@ function HeroBackdrop({
     return (
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
         {/* Uma <img> por tamanho de tela, cada uma com o enquadramento que o admin definiu. O parallax move as duas juntas. */}
-        <motion.div style={{ y: glowY }} className="absolute inset-0">
+        <m.div style={{ y: glowY }} className="absolute inset-0">
           <img
             src={imageUrl}
             alt=""
@@ -74,7 +73,7 @@ function HeroBackdrop({
             style={heroFocusStyle(mobile)}
             className="absolute inset-0 size-full object-cover md:hidden"
           />
-        </motion.div>
+        </m.div>
         <div className="absolute inset-0 bg-background/55" />
         <div className="absolute inset-x-0 top-0 h-[60%] bg-gradient-scrim-top" />
       </div>
@@ -83,20 +82,9 @@ function HeroBackdrop({
 
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-      <motion.div style={{ y: glowY }} className="absolute inset-0 bg-hero-glow" />
-      <svg className="absolute inset-0 size-full opacity-[0.05]">
-        <filter id={filterId}>
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.8"
-            numOctaves={3}
-            stitchTiles="stitch"
-          />
-          {/* Mantém as letras em branco e usa só o ruído da turbulência como alpha: vira grão. */}
-          <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0" />
-        </filter>
-        <rect width="100%" height="100%" filter={`url(#${filterId})`} />
-      </svg>
+      <m.div style={{ y: glowY }} className="absolute inset-0 bg-hero-glow" />
+      {/* Grão em imagem de fundo (utilitário `grain`), não um filtro SVG inline: o navegador o rasteriza uma vez. */}
+      <div className="absolute inset-0 grain opacity-[0.05]" />
     </div>
   )
 }
@@ -105,7 +93,7 @@ function HeroBackdrop({
  * Primeira seção da página. Comunica só o que é certo — sem slogan, endereço,
  * telefone ou preço inventados.
  *
- * Centro: a logo redonda (src/assets/brand/logo-color.png), que o ponteiro (mouse
+ * Centro: a logo redonda (public/brand/logo-color.webp), que o ponteiro (mouse
  * ou dedo) gira na horizontal e inclina na vertical. Os CTAs ficam na base. O nome
  * da marca vai só num h1 para leitores de tela.
  *
@@ -131,6 +119,16 @@ export function Hero() {
   const shadowScaleY = useTransform(rotateX, (v) => Math.max(0.45, Math.abs(Math.cos(toRad(v)))))
   const coreX = useTransform(rotateY, (v) => -Math.sin(toRad(v)) * 40)
   const penumbraX = useTransform(rotateY, (v) => -Math.sin(toRad(v)) * 75)
+  // Brilho atrás da logo: anda na direção do ponteiro (até 18% da largura do halo), cresce e
+  // acende mais quanto mais a logo inclina. Vem da mesma mola da rotação, então volta sozinho.
+  const tiltRatio = (v: number) => Math.max(-1, Math.min(1, v / 180))
+  const glowX = useTransform(rotateY, (v) => `${tiltRatio(v) * 18}%`)
+  const glowY = useTransform(rotateX, (v) => `${-tiltRatio(v) * 18}%`)
+  const glowLift = useTransform([rotateX, rotateY], (values: number[]) =>
+    Math.min(1, Math.hypot(values[0], values[1]) / 180),
+  )
+  const glowScale = useTransform(glowLift, (t) => 1 + t * 0.15)
+  const glowOpacity = useTransform(glowLift, (t) => 0.8 + t * 0.2)
   const reducedMotion = useReducedMotion()
   const idleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const returning = useRef<AnimationPlaybackControls[]>([])
@@ -184,7 +182,7 @@ export function Hero() {
       />
 
       {/* stagger: logo, CTAs e a seta descem em sequência ao carregar a página. */}
-      <motion.div
+      <m.div
         initial="hidden"
         animate="visible"
         variants={staggerContainer}
@@ -197,22 +195,26 @@ export function Hero() {
           </h1>
 
           {/* Logo redonda no centro: o ponteiro controla o giro horizontal (360° de borda a borda). Com movimento reduzido, não gira. */}
-          <motion.div variants={fadeInUp} className="relative">
-            <div aria-hidden="true" className="absolute inset-[-12%] rounded-full bg-glow-halo" />
+          <m.div variants={fadeInUp} className="relative">
+            <m.div
+              aria-hidden="true"
+              style={{ x: glowX, y: glowY, scale: glowScale, opacity: glowOpacity }}
+              className="absolute inset-[-12%] rounded-full bg-glow-bloom"
+            />
             {/* Sombra no chão em duas camadas, sem filtro fixo na imagem: a penumbra larga e suave,
                 e por cima um núcleo escuro colado na base da logo. */}
-            <motion.div
+            <m.div
               aria-hidden="true"
               style={{ scaleX: shadowScaleX, scaleY: shadowScaleY, x: penumbraX }}
               className="pointer-events-none absolute inset-x-[2%] -bottom-[10%] h-[24%] rounded-full bg-black/55 blur-2xl"
             />
-            <motion.div
+            <m.div
               aria-hidden="true"
               style={{ scaleX: shadowScaleX, scaleY: shadowScaleY, x: coreX }}
               className="pointer-events-none absolute inset-x-[10%] -bottom-[4%] h-[12%] rounded-full bg-black/90 blur-md"
             />
-            <motion.img
-              src={logo}
+            <m.img
+              src={LOGO_SRC}
               alt=""
               width={600}
               height={600}
@@ -220,8 +222,8 @@ export function Hero() {
               style={{ rotateX, rotateY, transformPerspective: 900 }}
               className="relative size-72 rounded-full select-none sm:size-80 lg:size-[28rem]"
             />
-          </motion.div>
-          <motion.div variants={fadeInUp} className="mt-10 flex w-72 max-w-full flex-col gap-4">
+          </m.div>
+          <m.div variants={fadeInUp} className="mt-10 flex w-72 max-w-full flex-col gap-4">
             <div className="relative">
               {/* Brilho teal atrás da placa principal, fora do recorte para não ser cortado. */}
               <div
@@ -236,19 +238,19 @@ export function Hero() {
             <Button href={`#${sectionIds.about}`} variant="outline" size="lg" className="w-full">
               Sobre nós
             </Button>
-          </motion.div>
+          </m.div>
         </Container>
 
         {/* Indicação para continuar navegando: só entra com fade, sem loop — nada pulando na tela sem motivo. */}
-        <motion.a
+        <m.a
           href={`#${sectionIds.about}`}
           variants={fadeIn}
           aria-label="Rolar para a próxima seção"
           className="row-start-2 mb-[max(2rem,env(safe-area-inset-bottom))] flex size-11 items-center justify-center justify-self-center rounded-control text-muted transition-control hover:text-foreground"
         >
           <ChevronDown aria-hidden="true" className="size-5" />
-        </motion.a>
-      </motion.div>
+        </m.a>
+      </m.div>
     </Section>
   )
 }

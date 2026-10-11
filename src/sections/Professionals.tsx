@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 
 import { fadeInUp } from '@/animations'
 import { Container, Heading, IconButton, Reveal, Section, Text } from '@/components/ui'
@@ -41,6 +41,8 @@ function ProfessionalCard({
           <img
             src={professional.photo_url}
             alt={professional.name}
+            loading="lazy"
+            decoding="async"
             className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
           />
         ) : (
@@ -101,9 +103,9 @@ export function Professionals() {
           </Heading>
 
           <Reveal amount={0.4}>
-            <motion.div variants={fadeInUp} className="mt-block">
+            <m.div variants={fadeInUp} className="mt-block">
               <ProfessionalCard professional={professionals[0]} centered />
-            </motion.div>
+            </m.div>
           </Reveal>
         </Container>
       </Section>
@@ -131,7 +133,7 @@ export function Professionals() {
         </div>
 
         <Reveal amount={0.4}>
-          <motion.div variants={fadeInUp} className="mt-block" {...pauseHandlers}>
+          <m.div variants={fadeInUp} className="mt-block" {...pauseHandlers}>
             <ul
               ref={trackRef}
               role="region"
@@ -173,7 +175,7 @@ export function Professionals() {
                 ))}
               </div>
             )}
-          </motion.div>
+          </m.div>
         </Reveal>
       </Container>
     </Section>

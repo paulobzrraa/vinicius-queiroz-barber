@@ -87,42 +87,46 @@ export function monthRangeIso(monthKey: string): { startIso: string; endIso: str
   }
 }
 
+/*
+ * Formatadores criados uma vez (ver também src/utils/timezone.ts): a agenda chama
+ * estas funções para cada dia do calendário e para cada linha, a cada render.
+ */
+const dateLabelFormatter = new Intl.DateTimeFormat('pt-BR', {
+  weekday: 'long',
+  day: '2-digit',
+  month: 'long',
+})
+const monthLabelFormatter = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' })
+const weekLabelFormatter = new Intl.DateTimeFormat('pt-BR', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
+})
+const weekdayShortFormatter = new Intl.DateTimeFormat('pt-BR', { weekday: 'short' })
+const timeFormatter = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' })
+
 export function formatDateLabel(dateKey: string): string {
-  return new Intl.DateTimeFormat('pt-BR', {
-    weekday: 'long',
-    day: '2-digit',
-    month: 'long',
-  }).format(new Date(`${dateKey}T00:00:00`))
+  return dateLabelFormatter.format(new Date(`${dateKey}T00:00:00`))
 }
 
 export function formatMonthLabel(monthKey: string): string {
-  return new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(
-    new Date(`${monthKey}T00:00:00`),
-  )
+  return monthLabelFormatter.format(new Date(`${monthKey}T00:00:00`))
 }
 
 /** "5 – 11 de outubro de 2026" (ou cruzando meses/anos, o Intl resolve sozinho). */
 export function formatWeekLabel(dateKey: string): string {
   const start = startOfWeek(dateKey)
   const end = addDays(start, 6)
-  return new Intl.DateTimeFormat('pt-BR', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  }).formatRange(new Date(`${start}T00:00:00`), new Date(`${end}T00:00:00`))
+  return weekLabelFormatter.formatRange(new Date(`${start}T00:00:00`), new Date(`${end}T00:00:00`))
 }
 
 /** "Dom" + "5", para o cabeçalho de cada coluna da semana. */
 export function formatWeekdayShort(dateKey: string): string {
-  return new Intl.DateTimeFormat('pt-BR', { weekday: 'short' })
-    .format(new Date(`${dateKey}T00:00:00`))
-    .replace('.', '')
+  return weekdayShortFormatter.format(new Date(`${dateKey}T00:00:00`)).replace('.', '')
 }
 
 export function formatTime(iso: string): string {
-  return new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' }).format(
-    new Date(iso),
-  )
+  return timeFormatter.format(new Date(iso))
 }
 
 /** Valor para <input type="datetime-local">, no horário local do navegador. */

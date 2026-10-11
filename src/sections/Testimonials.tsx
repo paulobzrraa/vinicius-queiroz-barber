@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 
 import { fadeInUp } from '@/animations'
 import { Card, Container, Heading, IconButton, Reveal, Section, Text } from '@/components/ui'
@@ -70,7 +70,7 @@ export function Testimonials() {
         </div>
 
         <Reveal amount={0.4}>
-          <motion.div variants={fadeInUp} className="mt-block" {...pauseHandlers}>
+          <m.div variants={fadeInUp} className="mt-block" {...pauseHandlers}>
             <ul
               ref={trackRef}
               role="region"
@@ -112,7 +112,7 @@ export function Testimonials() {
                 ))}
               </div>
             )}
-          </motion.div>
+          </m.div>
         </Reveal>
       </Container>
     </Section>

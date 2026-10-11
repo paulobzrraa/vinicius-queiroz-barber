@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 
 import { fadeInUp } from '@/animations'
 import { BookingButton } from '@/components/BookingButton'
@@ -19,21 +19,21 @@ export function Booking() {
     <Section id={sectionIds.booking} tone="light" aria-labelledby={`${sectionIds.booking}-title`}>
       <Container size="narrow">
         <Reveal amount={0.4} className="flex flex-col items-center gap-6 text-center">
-          <motion.div variants={fadeInUp}>
+          <m.div variants={fadeInUp}>
             <Heading id={`${sectionIds.booking}-title`} size="title-1">
               Pronto para o próximo corte?
             </Heading>
-          </motion.div>
+          </m.div>
 
-          <motion.div variants={fadeInUp}>
-            <Text size="lead" tone="muted" className="max-w-text">
+          <m.div variants={fadeInUp}>
+            <Text size="lead" tone="muted" className="scroll-reveal max-w-text">
               Escolha o dia e o horário no nosso agendamento online.
             </Text>
-          </motion.div>
+          </m.div>
 
-          <motion.div variants={fadeInUp} className="mt-4 flex w-full flex-col items-center gap-4">
+          <m.div variants={fadeInUp} className="mt-4 flex w-full flex-col items-center gap-4">
             <BookingButton size="lg" className="w-full sm:w-auto" />
-          </motion.div>
+          </m.div>
         </Reveal>
       </Container>
     </Section>
