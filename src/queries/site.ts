@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { GALLERY_BUCKET, supabase } from '@/lib/supabase'
 import type { Database } from '@/lib/database.types'
 
+import { assertSaved } from './writes'
+
 type SiteSettings = Database['public']['Tables']['site_settings']['Row']
 type SiteSettingsUpdate = Database['public']['Tables']['site_settings']['Update']
 
@@ -23,8 +25,13 @@ export function useUpdateSiteSettings() {
 
   return useMutation({
     mutationFn: async (values: SiteSettingsUpdate) => {
-      const { error } = await supabase.from('site_settings').update(values).eq('id', 1)
+      const { data, error } = await supabase
+        .from('site_settings')
+        .update(values)
+        .eq('id', 1)
+        .select('id')
       if (error) throw error
+      assertSaved(data)
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
   })

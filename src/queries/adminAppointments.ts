@@ -4,6 +4,8 @@ import { useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { AppointmentStatus, Database, PaymentMethod } from '@/lib/database.types'
 
+import { assertSaved } from './writes'
+
 export type AppointmentRow = Database['public']['Tables']['appointments']['Row']
 
 export interface AppointmentWithDetails extends AppointmentRow {
@@ -195,8 +197,13 @@ export function useUpdateAppointmentStatus() {
 
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: AppointmentStatus }) => {
-      const { error } = await supabase.from('appointments').update({ status }).eq('id', id)
+      const { data, error } = await supabase
+        .from('appointments')
+        .update({ status })
+        .eq('id', id)
+        .select('id')
       if (error) throw error
+      assertSaved(data)
 
       const { error: historyError } = await supabase
         .from('appointment_status_history')
@@ -232,11 +239,13 @@ export function useUpdatePaymentMethod() {
       id: string
       paymentMethod: PaymentMethod | null
     }) => {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('appointments')
         .update({ payment_method: paymentMethod })
         .eq('id', id)
+        .select('id')
       if (error) throw error
+      assertSaved(data)
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: baseKey }),
   })

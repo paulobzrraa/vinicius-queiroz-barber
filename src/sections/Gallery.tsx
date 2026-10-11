@@ -226,7 +226,7 @@ export function Gallery() {
   if (!galleryImages) return null
 
   return (
-    <Section id={sectionIds.gallery} topDivider aria-labelledby={`${sectionIds.gallery}-title`}>
+    <Section id={sectionIds.gallery} aria-labelledby={`${sectionIds.gallery}-title`}>
       <Container>
         <Heading id={`${sectionIds.gallery}-title`} className="text-center">
           Galeria

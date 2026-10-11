@@ -94,11 +94,7 @@ export function Professionals() {
 
   if (total === 1) {
     return (
-      <Section
-        id={sectionIds.professionals}
-        topDivider
-        aria-labelledby={`${sectionIds.professionals}-title`}
-      >
+      <Section id={sectionIds.professionals} aria-labelledby={`${sectionIds.professionals}-title`}>
         <Container>
           <Heading id={`${sectionIds.professionals}-title`} className="text-center">
             Nossa equipe
@@ -115,11 +111,7 @@ export function Professionals() {
   }
 
   return (
-    <Section
-      id={sectionIds.professionals}
-      topDivider
-      aria-labelledby={`${sectionIds.professionals}-title`}
-    >
+    <Section id={sectionIds.professionals} aria-labelledby={`${sectionIds.professionals}-title`}>
       <Container>
         <div className="grid items-end gap-4 sm:grid-cols-[1fr_auto_1fr]">
           <Heading id={`${sectionIds.professionals}-title`} className="text-center sm:col-start-2">

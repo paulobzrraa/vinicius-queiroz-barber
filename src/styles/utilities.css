@@ -277,7 +277,7 @@
   background-size: 1rem;
 }
 
-/* Halo teal atrás do emblema do Hero: um disco de luz que some nas bordas. */
+/* Halo teal: um disco de luz que some nas bordas (atrás do CTA e do ScrollAura). */
 @utility bg-glow-halo {
   background-image: radial-gradient(
     closest-side,
@@ -285,19 +285,6 @@
     color-mix(in oklab, var(--color-glow) 10%, transparent) 60%,
     transparent 100%
   );
-}
-
-/* Faixa de luz diagonal (cromo) que atravessa o emblema. */
-@utility bg-chrome-sheen {
-  background-image: linear-gradient(
-    105deg,
-    transparent 40%,
-    color-mix(in oklab, var(--white) 55%, transparent) 50%,
-    transparent 60%
-  );
-  width: 60%;
-  left: 0;
-  mix-blend-mode: overlay;
 }
 
 /*
@@ -401,21 +388,6 @@
       }
     }
   }
-}
-
-/*
- * Faixa de barbearia (listras diagonais que deslizam, como o poste). Usada
- * como ornamento entre o emblema e os botões.
- */
-@utility pole-band {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    var(--color-accent) 0 8px,
-    var(--ink-950) 8px 16px,
-    var(--color-foreground) 16px 22px,
-    var(--ink-950) 22px 30px
-  );
-  background-size: 42px 42px;
 }
 
 /*

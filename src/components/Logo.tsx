@@ -21,7 +21,7 @@ export function Logo({ className, id }: { className?: string; id?: string }) {
       width={600}
       height={600}
       decoding="async"
-      className={cn('aspect-square w-auto', className)}
+      className={cn('aspect-square w-auto max-w-none', className)}
     />
   )
 }

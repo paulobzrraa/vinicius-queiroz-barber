@@ -52,7 +52,7 @@ export function Testimonials() {
   if (!testimonials || testimonials.length === 0) return null
 
   return (
-    <Section id="depoimentos" topDivider aria-labelledby="depoimentos-title">
+    <Section id="depoimentos" aria-labelledby="depoimentos-title">
       <Container>
         <div className="flex items-end justify-between gap-4">
           <Heading id="depoimentos-title">O que dizem nossos clientes</Heading>

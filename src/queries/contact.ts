@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import type { Database } from '@/lib/database.types'
 
+import { assertSaved } from './writes'
+
 type ContactSettings = Database['public']['Tables']['contact_settings']['Row']
 type ContactSettingsUpdate = Database['public']['Tables']['contact_settings']['Update']
 type OpeningHoursRow = Database['public']['Tables']['opening_hours']['Row']
@@ -35,8 +37,13 @@ export function useUpdateContactSettings() {
 
   return useMutation({
     mutationFn: async (values: ContactSettingsUpdate) => {
-      const { error } = await supabase.from('contact_settings').update(values).eq('id', 1)
+      const { data, error } = await supabase
+        .from('contact_settings')
+        .update(values)
+        .eq('id', 1)
+        .select('id')
       if (error) throw error
+      assertSaved(data)
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: contactKey }),
   })

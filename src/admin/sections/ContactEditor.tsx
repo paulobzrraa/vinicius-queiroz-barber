@@ -129,6 +129,11 @@ function ContactFieldsForm({ contact }: { contact: ContactSettings }) {
         {update.isPending ? 'Salvando…' : 'Salvar'}
       </Button>
       {update.isSuccess && <span className="ms-3 text-small text-muted">Salvo.</span>}
+      {update.isError && (
+        <span role="alert" className="mt-3 block text-small text-foreground">
+          Não foi possível salvar: {update.error.message}
+        </span>
+      )}
     </form>
   )
 }
@@ -232,6 +237,11 @@ function OpeningHoursEditor() {
         {save.isPending ? 'Salvando…' : 'Salvar horários'}
       </Button>
       {save.isSuccess && <span className="ms-3 text-small text-muted">Salvo.</span>}
+      {save.isError && (
+        <span role="alert" className="mt-3 block text-small text-foreground">
+          Não foi possível salvar: {save.error.message}
+        </span>
+      )}
     </form>
   )
 }

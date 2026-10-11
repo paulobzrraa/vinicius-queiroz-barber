@@ -6,11 +6,4 @@ export {
   sealDraw,
   staggerInterval,
 } from './tokens'
-export {
-  badgeReveal,
-  fadeIn,
-  fadeInUp,
-  imageReveal,
-  sealContent,
-  staggerContainer,
-} from './variants'
+export { fadeIn, fadeInUp, imageReveal, sealContent, staggerContainer } from './variants'

@@ -35,6 +35,13 @@ alter table site_settings add column if not exists hero_image_url text;
 -- GIF opcional ao lado do texto de "Sobre Nós" (src/sections/About.tsx). Sem
 -- altura fixa: a seção respeita a altura natural do arquivo enviado.
 alter table site_settings add column if not exists about_gif_url text;
+-- Enquadramento da foto do Hero (admin → Site → Hero): posição (x e y em %, 0 a
+-- 100) e zoom (1 = padrão), separados para desktop e mobile. Ver src/utils/heroPhoto.ts.
+alter table site_settings add column if not exists hero_focus_desktop jsonb not null default '{"x": 50, "y": 50, "zoom": 1}';
+alter table site_settings add column if not exists hero_focus_mobile jsonb not null default '{"x": 50, "y": 50, "zoom": 1}';
+alter table site_settings drop constraint if exists site_settings_hero_focus_check;
+alter table site_settings add constraint site_settings_hero_focus_check
+  check (jsonb_typeof(hero_focus_desktop) = 'object' and jsonb_typeof(hero_focus_mobile) = 'object');
 
 create table if not exists contact_settings (
   id smallint primary key default 1 check (id = 1),

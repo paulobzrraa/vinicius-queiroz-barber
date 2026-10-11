@@ -257,12 +257,14 @@ Fixo no topo e sempre ao alcance, porque o botão de agendar precisa estar visí
 
 ## Hero
 
-Ocupa a tela inteira (`min-h-dvh`) e comunica só o que é certo: "Vinicius Queiroz Barber" (tabelas `site_settings`/`contact_settings`, editáveis em `/admin`), sem slogan, endereço, telefone ou preço inventados.
+Ocupa a tela inteira (`min-h-dvh`) e comunica só o que é certo, sem slogan, endereço, telefone ou preço inventados. Visualmente, sobram a logo, os CTAs e o fundo gráfico; o nome da marca (`site_settings`, editável em `/admin`) fica só num `h1` `sr-only`, para leitores de tela.
 
-- **Fundo:** por enquanto é um tratamento gráfico (brilho assimétrico + grão fotográfico sutil, ambos em CSS/SVG, sem imagem) em vez de uma foto. As fotos do Instagram oficial disponíveis vão no máximo a 672px de largura — baixas demais para um fundo em tela cheia, que ficariam borradas e contradiriam o posicionamento premium. **Pendente:** uma foto real da barbearia em alta resolução (mínimo ~2400px), para substituir `bg-hero-glow` em `src/sections/Hero.tsx` (BL-009).
-- **CTAs:** `Agendar horário` (primário, destino de `booking_settings`) e `Conhecer a barbearia` (contorno, rola até Sobre Nós). Empilhados e com largura total até `sm` (640px); lado a lado dali para cima.
-- **Indicador de rolagem:** seta discreta no rodapé da seção, com um leve balanço (`motion-safe:animate-bounce`) e rótulo acessível; também é um link para a próxima seção.
-- **Animação de entrada:** eyebrow, título, CTAs e indicador entram em sequência (`src/animations/variants.ts` + `motion/react`). O `<MotionConfig reducedMotion="user">` em `main.tsx` faz toda animação do Motion no site respeitar `prefers-reduced-motion` automaticamente (BL-036), não só aqui.
+- **Logo:** o emblema redondo (`src/assets/brand/logo-color.png`) no centro, com um halo teal fixo e uma sombra de contato no chão, a única sombra da logo: ela afina de lado e desliza para o lado oposto ao giro, sem filtro fixo na imagem. O ponteiro percorre o Hero inteiro e controla o giro: a posição horizontal gira a logo em torno do eixo vertical e a vertical em torno do horizontal, ambas de −180° a 180°. Uma mola (`LOGO_FOLLOW`) leva a logo até o alvo com um pequeno atraso. Ao sair do Hero, ou soltar o dedo, ela volta à posição de repouso. Com `prefers-reduced-motion`, não gira. A lógica fica em `src/sections/Hero.tsx` (`turnLogo` e `releaseLogo`).
+- **Fundo:** por padrão, o tratamento gráfico (`bg-hero-glow` com grão, em `src/sections/Hero.tsx`). Não há mais foto de fundo no código. Se `hero_image_url` tiver uma foto (enviada em `/admin` → Site → Hero), ela entra no lugar, escurecida, com o parallax.
+- **Enquadramento:** só aparece no `/admin` quando há uma foto de fundo. A prévia mostra a foto em desktop e em mobile. Arraste a foto (ou use as setas do teclado) e ajuste o zoom; cada tamanho tem o seu (`hero_focus_desktop` e `hero_focus_mobile` em `site_settings`, lidos por `src/utils/heroPhoto.ts`). Para salvar o enquadramento, rode `supabase/schema.sql` de novo: ele cria essas colunas.
+- **CTAs:** `Reservar horário` (primário, leva a Agendamento) e `Sobre nós` (contorno, leva a Sobre Nós), centralizados logo abaixo da logo, no meio do Hero. Sempre um abaixo do outro, com 288px de largura (`w-72`), em qualquer tela.
+- **Indicador de rolagem:** seta discreta no rodapé da seção, com rótulo acessível; também é um link para Sobre Nós.
+- **Animação de entrada:** a logo, os CTAs e a seta entram em sequência (`src/animations/variants.ts` + `motion/react`). O `<MotionConfig reducedMotion="user">` em `main.tsx` faz toda animação do Motion no site respeitar `prefers-reduced-motion` automaticamente (BL-036), não só aqui.
 
 ### Meus agendamentos (e-mail + senha)
 

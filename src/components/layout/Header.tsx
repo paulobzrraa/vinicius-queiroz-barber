@@ -79,7 +79,7 @@ export function Header() {
               activeSection !== null && 'opacity-100',
             )}
           >
-            <Logo className="h-7 lg:h-8" />
+            <Logo className="h-9 lg:h-10" />
           </a>
 
           <nav aria-label="Principal" className="hidden lg:block">

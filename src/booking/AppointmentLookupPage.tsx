@@ -117,7 +117,7 @@ export function AppointmentLookupPage() {
                   </motion.div>
                   <motion.div variants={fadeInUp}>
                     <Button href="/agendar" variant="outline">
-                      Agendar novo horário
+                      Reservar outro horário
                     </Button>
                   </motion.div>
                 </motion.div>

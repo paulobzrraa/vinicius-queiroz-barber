@@ -180,49 +180,13 @@
   --breakpoint-3xl: 120rem; /* 1920px */
 
   /* ------------------------------------------------------------ Animações */
-  /* Halo do emblema do Hero (pulsa devagar) e o brilho de cromo que o atravessa. */
-  --animate-glow-pulse: glow-pulse 6s var(--ease-in-out) infinite;
-  --animate-chrome-sheen: chrome-sheen 1.6s var(--ease-in-out) 0.6s 1 both;
-  --animate-pole-slide: pole-slide 1.2s linear infinite;
   --animate-ring-spin: ring-spin 48s linear infinite;
   /* Pulso elétrico: a borda do painel respira em azul, como a arte da logo. */
   --animate-edge-pulse: edge-pulse 3.2s var(--ease-in-out) infinite;
-  /* Faísca que percorre a borda do emblema no Hero. */
-  --animate-spark-orbit: spark-orbit 6s linear infinite;
-
-  @keyframes pole-slide {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: 42px 0;
-    }
-  }
 
   @keyframes ring-spin {
     to {
       transform: rotate(360deg);
-    }
-  }
-
-  @keyframes glow-pulse {
-    0%,
-    100% {
-      opacity: 0.55;
-      scale: 0.97;
-    }
-    50% {
-      opacity: 1;
-      scale: 1.03;
-    }
-  }
-
-  @keyframes chrome-sheen {
-    from {
-      transform: translateX(-120%) skewX(-18deg);
-    }
-    to {
-      transform: translateX(220%) skewX(-18deg);
     }
   }
 
@@ -233,15 +197,6 @@
     }
     50% {
       opacity: 1;
-    }
-  }
-
-  @keyframes spark-orbit {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
     }
   }
 

@@ -63,7 +63,7 @@ export function ConfirmStep({ state, onConfirmed, onSlotTaken }: ConfirmStepProp
       title="Confira e confirme"
       footer={
         <Button onClick={handleConfirm} disabled={create.isPending || !state.slot}>
-          {create.isPending ? 'Confirmando…' : 'Confirmar agendamento'}
+          {create.isPending ? 'Confirmando…' : 'Confirmar horário'}
         </Button>
       }
     >

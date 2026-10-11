@@ -42,7 +42,7 @@ export function Footer() {
         >
           <div>
             <a href={`#${sectionIds.hero}`} className="inline-block rounded-sm">
-              <Logo className="h-9" />
+              <Logo className="h-27" />
             </a>
           </div>
 

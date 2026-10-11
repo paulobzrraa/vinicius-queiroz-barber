@@ -9,8 +9,10 @@ import {
   useUploadAboutGif,
   useUploadHeroPhoto,
 } from '@/queries/site'
+import { type HeroFocus, parseHeroFocus, sameHeroFocus } from '@/utils/heroPhoto'
 
 import { Field, TextArea, TextInput } from '../components/Field'
+import { HeroFraming } from '../components/HeroFraming'
 import { confirmDelete } from '../components/confirmDelete'
 
 type SiteSettings = Database['public']['Tables']['site_settings']['Row']
@@ -29,10 +31,15 @@ function SiteForm({ site }: { site: SiteSettings }) {
     aboutBody: site.about_body ?? '',
     heroImageUrl: site.hero_image_url ?? '',
     aboutGifUrl: site.about_gif_url ?? '',
+    heroFocusDesktop: parseHeroFocus(site.hero_focus_desktop),
+    heroFocusMobile: parseHeroFocus(site.hero_focus_mobile),
   })
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
+    const framingChanged =
+      !sameHeroFocus(form.heroFocusDesktop, parseHeroFocus(site.hero_focus_desktop)) ||
+      !sameHeroFocus(form.heroFocusMobile, parseHeroFocus(site.hero_focus_mobile))
     update.mutate({
       name: form.name,
       tagline: form.tagline || null,
@@ -41,7 +48,21 @@ function SiteForm({ site }: { site: SiteSettings }) {
       about_body: form.aboutBody || null,
       hero_image_url: form.heroImageUrl || null,
       about_gif_url: form.aboutGifUrl || null,
+      // O enquadramento só vai junto quando mudou: assim salvar os outros campos
+      // não depende da migração que cria essas colunas (ver supabase/schema.sql).
+      ...(framingChanged && {
+        hero_focus_desktop: form.heroFocusDesktop,
+        hero_focus_mobile: form.heroFocusMobile,
+      }),
     })
+  }
+
+  function setHeroFocus(device: 'desktop' | 'mobile', focus: HeroFocus) {
+    setForm((current) =>
+      device === 'desktop'
+        ? { ...current, heroFocusDesktop: focus }
+        : { ...current, heroFocusMobile: focus },
+    )
   }
 
   async function handleHeroFileChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -165,7 +186,7 @@ function SiteForm({ site }: { site: SiteSettings }) {
         <h3 className="text-small font-semibold text-foreground">Hero</h3>
         <Field
           label="Foto de fundo do Hero"
-          hint="Some para o fundo gráfico (sem foto) enquanto estiver vazio."
+          hint="Vazio = sem foto: o Hero mostra só o fundo gráfico e a logo."
         >
           <div className="mt-1 space-y-3">
             {form.heroImageUrl && (
@@ -209,6 +230,18 @@ function SiteForm({ site }: { site: SiteSettings }) {
             />
           </div>
         </Field>
+
+        {form.heroImageUrl && (
+          <div className="space-y-3">
+            <span className="block text-small text-muted">Enquadramento</span>
+            <HeroFraming
+              imageUrl={form.heroImageUrl}
+              desktop={form.heroFocusDesktop}
+              mobile={form.heroFocusMobile}
+              onChange={setHeroFocus}
+            />
+          </div>
+        )}
       </div>
 
       <div className="mt-6 border-t border-border pt-6">

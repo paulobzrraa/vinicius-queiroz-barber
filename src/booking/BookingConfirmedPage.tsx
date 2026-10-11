@@ -39,7 +39,7 @@ export function BookingConfirmedPage() {
               ? 'Esse agendamento foi cancelado.'
               : 'Agendamento não encontrado. Confira o link.'}
           </Text>
-          <Button href="/agendar">Fazer um novo agendamento</Button>
+          <Button href="/agendar">Reservar outro horário</Button>
         </div>
       )}
     </BookingLayout>

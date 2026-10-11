@@ -80,7 +80,7 @@ export function Contact() {
       : openingHours.map((item) => ({ label: item.days, hours: item.hours }))
 
   return (
-    <Section id={sectionIds.contact} topDivider aria-labelledby={`${sectionIds.contact}-title`}>
+    <Section id={sectionIds.contact} aria-labelledby={`${sectionIds.contact}-title`}>
       <Container>
         <Heading id={`${sectionIds.contact}-title`} className="text-center">
           Contato
@@ -127,7 +127,7 @@ export function Contact() {
                 label="WhatsApp"
                 cta={{
                   href: `https://wa.me/${whatsapp}`,
-                  label: 'Fale com a gente',
+                  label: 'Chamar no WhatsApp',
                   external: true,
                 }}
               >
@@ -143,7 +143,7 @@ export function Contact() {
               <ContactCard
                 icon={<Mail className="size-6" />}
                 label="E-mail"
-                cta={{ href: `mailto:${email}`, label: 'Escrever um e-mail' }}
+                cta={{ href: `mailto:${email}`, label: 'Enviar e-mail' }}
               >
                 <Text size="small" tone="muted">
                   {email}

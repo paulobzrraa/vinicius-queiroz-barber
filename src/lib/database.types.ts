@@ -59,6 +59,8 @@ export interface Database {
           about_body: string | null
           hero_image_url: string | null
           about_gif_url: string | null
+          hero_focus_desktop: { x: number; y: number; zoom: number }
+          hero_focus_mobile: { x: number; y: number; zoom: number }
         },
         {
           id?: number
@@ -70,6 +72,8 @@ export interface Database {
           about_body?: string | null
           hero_image_url?: string | null
           about_gif_url?: string | null
+          hero_focus_desktop?: { x: number; y: number; zoom: number }
+          hero_focus_mobile?: { x: number; y: number; zoom: number }
         }
       >
       contact_settings: Table<
