@@ -159,10 +159,10 @@ export function Contact() {
                   {hoursLines.map((line) => (
                     <li
                       key={line.label}
-                      className="flex justify-between gap-4 text-small text-muted"
+                      className="flex flex-col gap-0.5 text-small text-muted sm:flex-row sm:justify-between sm:gap-6"
                     >
                       <span>{line.label}</span>
-                      <span>{line.hours}</span>
+                      <span className="sm:text-right">{line.hours}</span>
                     </li>
                   ))}
                 </ul>
