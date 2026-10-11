@@ -142,8 +142,6 @@ export function Hero() {
 
   function turnLogo(event: PointerEvent<HTMLElement>) {
     if (reducedMotion) return
-    // Dedo não inclina a logo: um arrasto vertical com o dedo é rolagem, e a rolagem gira a logo sozinha.
-    if (event.pointerType === 'touch') return
     // Ao rolar, o navegador manda pointermove com o mouse parado, e a posição dele dentro do hero
     // muda. Só conta quando o ponteiro de fato saiu do lugar.
     const last = lastPointer.current
@@ -154,7 +152,8 @@ export function Hero() {
     const x = Math.min(1, Math.max(0, (event.clientX - box.left) / box.width))
     const y = Math.min(1, Math.max(0, (event.clientY - box.top) / box.height))
     targetY.set((x - 0.5) * 360)
-    targetX.set((0.5 - y) * 360)
+    // No dedo só o giro horizontal: um arrasto vertical é rolagem, e a rolagem já gira a logo.
+    if (event.pointerType !== 'touch') targetX.set((0.5 - y) * 360)
     scheduleReturn()
   }
 
