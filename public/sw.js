@@ -13,6 +13,10 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim())
 })
 
+// Sem cache: o handler só existe para o navegador considerar o site instalável (Android).
+// Sem chamar respondWith, cada requisição segue direto para a rede.
+self.addEventListener('fetch', () => {})
+
 self.addEventListener('push', (event) => {
   let data = {}
   try {

@@ -30,8 +30,11 @@ const LOGO_IDLE_DELAY = 2000
 /** Duração da volta lenta à posição original (s). */
 const LOGO_RETURN = { duration: 1, ease: 'easeInOut' } as const
 
-/** Converte graus em radianos (para as funções trigonométricas da sombra). */
-const toRad = (deg: number) => (deg * Math.PI) / 180
+/** Mola do giro de rolagem: alcança o alvo sem passar dele, então o giro sai liso. */
+const SPIN_FOLLOW = { stiffness: 90, damping: 24, mass: 0.8 }
+
+/** Graus que a logo gira por pixel de distância do topo (cerca de 270° ao descer uma tela inteira). */
+const SPIN_DEG_PER_PX = 0.3
 
 /**
  * Camada decorativa de fundo. Por padrão não há foto: o fundo é o tratamento
@@ -111,14 +114,10 @@ export function Hero() {
   const targetX = useMotionValue(0)
   const rotateY = useSpring(targetY, LOGO_FOLLOW)
   const rotateX = useSpring(targetX, LOGO_FOLLOW)
-  // Sombra no chão, como a de um disco girando sobre uma superfície: de perfil ela fica
-  // quase um traço, e a luz de cima a empurra para o lado oposto ao giro. A penumbra
-  // desliza mais que o núcleo, porque está mais longe do ponto de contato. Só
-  // transformações, então não re-rasteriza a cada frame.
-  const shadowScaleX = useTransform(rotateY, (v) => Math.max(0.15, Math.abs(Math.cos(toRad(v)))))
-  const shadowScaleY = useTransform(rotateX, (v) => Math.max(0.45, Math.abs(Math.cos(toRad(v)))))
-  const coreX = useTransform(rotateY, (v) => -Math.sin(toRad(v)) * 40)
-  const penumbraX = useTransform(rotateY, (v) => -Math.sin(toRad(v)) * 75)
+  // Giro de rolagem: soma-se à inclinação do ponteiro. Só o eixo vertical (a logo gira de lado).
+  const spinTarget = useMotionValue(0)
+  const spinY = useSpring(spinTarget, SPIN_FOLLOW)
+  const turnY = useTransform([rotateY, spinY], (values: number[]) => values[0] + values[1])
   // Brilho atrás da logo: anda na direção do ponteiro (até 18% da largura do halo), cresce e
   // acende mais quanto mais a logo inclina. Vem da mesma mola da rotação, então volta sozinho.
   const tiltRatio = (v: number) => Math.max(-1, Math.min(1, v / 180))
@@ -132,6 +131,7 @@ export function Hero() {
   const reducedMotion = useReducedMotion()
   const idleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const returning = useRef<AnimationPlaybackControls[]>([])
+  const lastPointer = useRef<{ x: number; y: number } | null>(null)
 
   // Cancela a espera e a volta em andamento: o usuário voltou a interagir.
   function stopReturn() {
@@ -142,6 +142,13 @@ export function Hero() {
 
   function turnLogo(event: PointerEvent<HTMLElement>) {
     if (reducedMotion) return
+    // Dedo não inclina a logo: um arrasto vertical com o dedo é rolagem, e a rolagem gira a logo sozinha.
+    if (event.pointerType === 'touch') return
+    // Ao rolar, o navegador manda pointermove com o mouse parado, e a posição dele dentro do hero
+    // muda. Só conta quando o ponteiro de fato saiu do lugar.
+    const last = lastPointer.current
+    lastPointer.current = { x: event.clientX, y: event.clientY }
+    if (last && last.x === event.clientX && last.y === event.clientY) return
     stopReturn()
     const box = event.currentTarget.getBoundingClientRect()
     const x = Math.min(1, Math.max(0, (event.clientX - box.left) / box.width))
@@ -162,6 +169,33 @@ export function Hero() {
 
   // Ao desmontar o Hero, para o temporizador e qualquer volta pendente.
   useEffect(() => stopReturn, [])
+
+  // Rolagem gira a logo conforme a distância do topo. Ao sair do topo sorteia um sentido, e ao
+  // voltar ao topo a logo volta ao estado original. Quem prefere menos movimento não tem giro.
+  useEffect(() => {
+    if (reducedMotion) return
+    let direction = 1
+    let atTop = true
+    function onScroll() {
+      const y = window.scrollY
+      // Menos de 2px conta como topo (o navegador às vezes para a alguns pixels de distância).
+      if (y < 2) {
+        atTop = true
+        spinTarget.set(0)
+        return
+      }
+      if (atTop) {
+        direction = Math.random() < 0.5 ? -1 : 1
+        atTop = false
+      }
+      // Depois de uma tela de distância a logo já saiu da tela: o giro para de crescer.
+      spinTarget.set(direction * Math.min(y, window.innerHeight) * SPIN_DEG_PER_PX)
+    }
+    // Página que carrega já rolada (o navegador restaura a posição): começa do ponto em que está.
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [reducedMotion, spinTarget])
 
   if (!site) return null
 
@@ -201,25 +235,13 @@ export function Hero() {
               style={{ x: glowX, y: glowY, scale: glowScale, opacity: glowOpacity }}
               className="absolute inset-[-12%] rounded-full bg-glow-bloom"
             />
-            {/* Sombra no chão em duas camadas, sem filtro fixo na imagem: a penumbra larga e suave,
-                e por cima um núcleo escuro colado na base da logo. */}
-            <m.div
-              aria-hidden="true"
-              style={{ scaleX: shadowScaleX, scaleY: shadowScaleY, x: penumbraX }}
-              className="pointer-events-none absolute inset-x-[2%] -bottom-[10%] h-[24%] rounded-full bg-black/55 blur-2xl"
-            />
-            <m.div
-              aria-hidden="true"
-              style={{ scaleX: shadowScaleX, scaleY: shadowScaleY, x: coreX }}
-              className="pointer-events-none absolute inset-x-[10%] -bottom-[4%] h-[12%] rounded-full bg-black/90 blur-md"
-            />
             <m.img
               src={LOGO_SRC}
               alt=""
               width={600}
               height={600}
               fetchPriority="high"
-              style={{ rotateX, rotateY, transformPerspective: 900 }}
+              style={{ rotateX, rotateY: turnY, transformPerspective: 900 }}
               className="relative size-72 rounded-full select-none sm:size-80 lg:size-[28rem]"
             />
           </m.div>

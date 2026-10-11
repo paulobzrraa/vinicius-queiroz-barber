@@ -1,8 +1,9 @@
 import { lazy, Suspense } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 
 import { App } from '@/App'
 import { DevEnvBanner } from '@/components/DevEnvBanner'
+import { InstallPrompt } from '@/components/InstallPrompt'
 
 // O admin (formulários, upload, etc.) só é baixado por quem visita /admin —
 // a landing page não carrega esse código à toa (ver aviso de chunk grande).
@@ -35,9 +36,13 @@ function RouteFallback() {
 }
 
 export function AppRoutes() {
+  const { pathname } = useLocation()
+
   return (
     <>
       <DevEnvBanner />
+      {/* Convite para a tela inicial no celular, em todo o site público (o painel do admin fica de fora). */}
+      {!pathname.startsWith('/admin') && <InstallPrompt />}
       <Routes>
         <Route path="/" element={<App />} />
         <Route
