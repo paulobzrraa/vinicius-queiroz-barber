@@ -237,7 +237,7 @@
 @utility bg-hero-glow {
   background-image: radial-gradient(
     60% 55% at 82% 8%,
-    color-mix(in oklab, var(--color-foreground) 12%, transparent),
+    color-mix(in oklab, var(--color-glow) 22%, transparent),
     transparent 70%
   );
 }
@@ -262,7 +262,7 @@
   background-image: linear-gradient(
     to right,
     transparent,
-    color-mix(in oklab, var(--color-foreground) 22%, transparent),
+    color-mix(in oklab, var(--color-glow) 45%, transparent),
     transparent
   );
 }
@@ -275,4 +275,284 @@
   background-repeat: no-repeat;
   background-position: right 1rem center;
   background-size: 1rem;
+}
+
+/* Halo teal atrás do emblema do Hero: um disco de luz que some nas bordas. */
+@utility bg-glow-halo {
+  background-image: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--color-glow) 38%, transparent),
+    color-mix(in oklab, var(--color-glow) 10%, transparent) 60%,
+    transparent 100%
+  );
+}
+
+/* Faixa de luz diagonal (cromo) que atravessa o emblema. */
+@utility bg-chrome-sheen {
+  background-image: linear-gradient(
+    105deg,
+    transparent 40%,
+    color-mix(in oklab, var(--white) 55%, transparent) 50%,
+    transparent 60%
+  );
+  width: 60%;
+  left: 0;
+  mix-blend-mode: overlay;
+}
+
+/*
+ * Botão em forma de placa de barbearia: cantos chanfrados, borda de cromo e
+ * um brilho que cruza a placa ao passar o mouse. A borda é o fundo do próprio
+ * elemento; o miolo é o ::before, inset em 1px, então o chanfro e a borda
+ * saem de um só recorte. `--plaque-border` e `--plaque-fill` mudam por
+ * variante (ver plaque-primary e plaque-outline).
+ */
+@layer components {
+  .plaque {
+    --chamfer: 0.75rem;
+    --plaque-cut: polygon(
+      var(--chamfer) 0,
+      100% 0,
+      100% calc(100% - var(--chamfer)),
+      calc(100% - var(--chamfer)) 100%,
+      0 100%,
+      0 var(--chamfer)
+    );
+
+    position: relative;
+    isolation: isolate;
+    background: var(--plaque-border);
+    clip-path: var(--plaque-cut);
+    transition:
+      scale var(--duration-press) var(--ease-out),
+      translate var(--duration-ui) var(--ease-out);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 1px;
+      z-index: -2;
+      background: var(--plaque-fill);
+      clip-path: var(--plaque-cut);
+      transition: background var(--duration-hover) ease;
+    }
+
+    /* Brilho de cromo: cruza a placa uma vez por toque/hover. */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(
+        105deg,
+        transparent 35%,
+        color-mix(in oklab, var(--white) 60%, transparent) 50%,
+        transparent 65%
+      );
+      transform: translateX(-120%);
+      transition: transform 700ms var(--ease-out);
+      pointer-events: none;
+    }
+
+    @media (hover: hover) {
+      &:hover::after {
+        transform: translateX(120%);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &::after {
+        display: none;
+      }
+    }
+  }
+
+  /* Principal: placa teal que brilha; a borda é o cromo claro para o recorte aparecer. */
+  .plaque-primary {
+    --plaque-border: linear-gradient(
+      135deg,
+      var(--white) 0%,
+      var(--color-accent) 40%,
+      var(--steel-600) 100%
+    );
+    --plaque-fill: linear-gradient(180deg, var(--color-accent), var(--color-accent-hover));
+    color: var(--color-accent-foreground);
+  }
+
+  /* Secundário: só a borda de aço e o texto; no hover a borda acende em teal. */
+  .plaque-outline {
+    --plaque-border: linear-gradient(
+      135deg,
+      var(--steel-300) 0%,
+      var(--steel-600) 50%,
+      var(--steel-300) 100%
+    );
+    --plaque-fill: color-mix(in oklab, var(--color-background) 70%, transparent);
+    color: var(--color-foreground);
+
+    @media (hover: hover) {
+      &:hover {
+        --plaque-border: linear-gradient(
+          135deg,
+          var(--color-accent) 0%,
+          var(--white) 50%,
+          var(--color-accent) 100%
+        );
+      }
+    }
+  }
+}
+
+/*
+ * Faixa de barbearia (listras diagonais que deslizam, como o poste). Usada
+ * como ornamento entre o emblema e os botões.
+ */
+@utility pole-band {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-accent) 0 8px,
+    var(--ink-950) 8px 16px,
+    var(--color-foreground) 16px 22px,
+    var(--ink-950) 22px 30px
+  );
+  background-size: 42px 42px;
+}
+
+/*
+ * Títulos que se revelam conforme entram na tela, ligados à rolagem com
+ * animation-timeline: view(). Sem suporte no navegador, o título aparece normal.
+ */
+@supports (animation-timeline: view()) {
+  @keyframes title-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(2.5rem) scale(0.97);
+      filter: blur(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  .scroll-title {
+    animation: title-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 35%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-title {
+      animation: none;
+    }
+  }
+}
+
+/*
+ * ============================ Estética "painel de barbearia" ===============
+ * Molduras de cromo, bordas elétricas que pulsam e tipografia metálica, no
+ * espírito da arte do Instagram. Tudo que se move respeita prefers-reduced-motion.
+ */
+
+@layer components {
+  /*
+   * Painel com moldura de cromo: borda em gradiente metálico (border-box),
+   * miolo na cor da superfície (padding-box), rebites nos quatro cantos e uma
+   * linha interna azul. O ::after é uma borda elétrica; .panel-live a faz pulsar.
+   */
+  .panel-frame {
+    position: relative;
+    border-radius: var(--radius-card);
+    border: 1.5px solid transparent;
+    background:
+      radial-gradient(
+          circle at 15px 15px,
+          color-mix(in oklab, var(--steel-300) 92%, white) 0 1.8px,
+          transparent 2.6px
+        )
+        no-repeat,
+      radial-gradient(
+          circle at calc(100% - 15px) 15px,
+          color-mix(in oklab, var(--steel-300) 92%, white) 0 1.8px,
+          transparent 2.6px
+        )
+        no-repeat,
+      radial-gradient(
+          circle at 15px calc(100% - 15px),
+          color-mix(in oklab, var(--steel-300) 92%, white) 0 1.8px,
+          transparent 2.6px
+        )
+        no-repeat,
+      radial-gradient(
+          circle at calc(100% - 15px) calc(100% - 15px),
+          color-mix(in oklab, var(--steel-300) 92%, white) 0 1.8px,
+          transparent 2.6px
+        )
+        no-repeat,
+      linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+      linear-gradient(
+          145deg,
+          color-mix(in oklab, var(--steel-300) 90%, white) 0%,
+          var(--steel-600) 32%,
+          var(--ink-800) 54%,
+          var(--steel-500) 100%
+        )
+        border-box;
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 22%, transparent),
+      inset 0 0 0 4px var(--color-surface),
+      inset 0 0 0 5px color-mix(in oklab, var(--color-glow) 24%, transparent),
+      inset 0 0 28px -10px color-mix(in oklab, var(--color-glow) 45%, transparent),
+      0 20px 44px -22px rgb(0 0 0 / 0.85);
+  }
+
+  .panel-frame::after {
+    content: '';
+    position: absolute;
+    inset: -1.5px;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-glow) 60%, transparent),
+      0 0 20px -2px color-mix(in oklab, var(--color-glow) 55%, transparent);
+    opacity: 0.55;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .panel-live::after {
+      animation: var(--animate-edge-pulse);
+    }
+  }
+}
+
+/* Tipografia metálica: metal escovado com vinco central e brilho azul. */
+@utility text-chrome {
+  background-image: linear-gradient(
+    180deg,
+    var(--chrome-hi) 0%,
+    var(--chrome-mid) 46%,
+    var(--chrome-lo) 54%,
+    var(--chrome-hi) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.35))
+    drop-shadow(0 0 22px color-mix(in oklab, var(--color-glow) 32%, transparent));
+}
+
+/* Borda elétrica para qualquer caixa (molduras de imagem, faixas). */
+@utility edge-glow {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--color-glow) 55%, transparent),
+    0 0 22px -3px color-mix(in oklab, var(--color-glow) 50%, transparent),
+    inset 0 0 16px -7px color-mix(in oklab, var(--color-glow) 60%, transparent);
+}
+
+/* Rótulo de apoio com brilho elétrico (acima dos títulos). */
+@utility eyebrow-tech {
+  color: var(--color-accent);
+  text-shadow: 0 0 12px color-mix(in oklab, var(--color-glow) 55%, transparent);
 }

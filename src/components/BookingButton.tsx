@@ -17,7 +17,7 @@ interface BookingButtonProps extends Omit<ComponentPropsWithoutRef<'a'>, 'href'>
  * sabe que vai abrir outra aba antes de clicar.
  */
 export function BookingButton({
-  children = 'Agendar horário',
+  children = 'Reserve sua cadeira',
   iconEnd,
   ...props
 }: BookingButtonProps) {

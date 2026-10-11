@@ -26,6 +26,16 @@ export const imageReveal: Variants = {
   visible: { opacity: 1, transform: 'scale(1) translateY(0px)', transition: reveal },
 }
 
+/** Entrada do emblema do Hero: assenta de um leve recuo de escala, sem sair do lugar. */
+export const badgeReveal: Variants = {
+  hidden: { opacity: 0, transform: 'scale(0.92)' },
+  visible: {
+    opacity: 1,
+    transform: 'scale(1)',
+    transition: { duration: 0.9, ease: easing.out },
+  },
+}
+
 /** Container que dispara os filhos em sequência. Os filhos usam os variants acima. */
 export const staggerContainer: Variants = {
   hidden: {},

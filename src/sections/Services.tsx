@@ -57,7 +57,7 @@ export function Services() {
   if (!services || services.length === 0) return null
 
   return (
-    <Section id={sectionIds.services} aria-labelledby={`${sectionIds.services}-title`}>
+    <Section id={sectionIds.services} topDivider aria-labelledby={`${sectionIds.services}-title`}>
       <Container>
         <div className="grid items-end gap-4 sm:grid-cols-[1fr_auto_1fr]">
           <Heading id={`${sectionIds.services}-title`} className="text-center sm:col-start-2">

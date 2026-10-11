@@ -20,7 +20,12 @@ export function Booking() {
   const { data: contact } = useContactSettings()
 
   return (
-    <Section id={sectionIds.booking} tone="light" aria-labelledby={`${sectionIds.booking}-title`}>
+    <Section
+      id={sectionIds.booking}
+      topDivider
+      tone="light"
+      aria-labelledby={`${sectionIds.booking}-title`}
+    >
       <Container size="narrow">
         <Reveal amount={0.4} className="flex flex-col items-center gap-6 text-center">
           <motion.div variants={fadeInUp}>

@@ -218,7 +218,7 @@ O build de produção e a Vercel não leem `.env.development.local`, então nada
 
 Moderno, premium e urbano, com tipografia pesada no estilo da Apple, bastante respiro e microinterações sutis.
 
-**A paleta vem da logo oficial**, que é preto (`#191919`) e branco, sem nenhuma cor; nas fotos do perfil do Instagram, 74% dos pixels também são neutros. Por isso a marca é monocromática e o destaque é a inversão: botão branco no tom escuro, preto no claro. A logo em si foi extraída da foto de perfil do Instagram, que só existe em 150px: para melhorar a nitidez em tamanhos grandes, substitua `src/assets/brand/logo.png` por um PNG com fundo transparente.
+**A paleta vem da logo oficial**: cromo teal sobre preto, como nas fotos do Instagram. O fundo é azul-marinho bem escuro, os textos são prata e o destaque é um teal de brilho (`--teal-300`). No tom claro, o destaque vira um teal mais fundo (`--teal-700`), para manter o contraste. A logo é o emblema colorido (`src/assets/brand/logo-color.png`), recortado de um post do Instagram com fundo transparente. Para ficar nítido em tamanhos grandes, substitua por um PNG ou SVG em alta resolução, mantendo o nome do arquivo.
 
 Com `npm run dev`, a prévia completa fica em http://localhost:5173/design-system.html (tokens e componentes nos dois tons, com os valores medidos no navegador). Ela não entra no build de produção.
 
@@ -234,9 +234,9 @@ Com `npm run dev`, a prévia completa fica em http://localhost:5173/design-syste
 
 ### Regras
 
-- **Cores:** use só os tokens semânticos (`bg-surface`, `text-muted`, `border-border`, `bg-accent`...), nunca hex nem a paleta base (`--gray-*`, `--white`). O fundo escuro é `#0d0d0d`, as superfícies usam o preto da marca (`#191919`) e o texto é `#f4f4f4`.
-- **Tom claro:** `<Section tone="light">` inverte cores, bordas, botões, sombras e a logo dentro da seção.
-- **Logo:** `<Logo className="h-10" />` (tamanho pela altura). É uma máscara pintada com a cor do texto, então serve nos dois tons.
+- **Cores:** use só os tokens semânticos (`bg-surface`, `text-muted`, `border-border`, `bg-accent`...), nunca hex nem a paleta base (`--ink-*`, `--steel-*`, `--teal-*`). O fundo escuro é `#03070c`, as superfícies são `#071019` e o texto é `#eef5f8`. O destaque é `--teal-300`.
+- **Tom claro:** `<Section tone="light">` troca para o fundo `#f1f6f8` e o destaque para o teal escuro (`#0f5561`), mantendo bordas, botões e sombras.
+- **Logo:** `<Logo className="h-10" />` (tamanho pela altura). É a imagem colorida, usada igual nos dois tons.
 - **Tipografia:** títulos com `<Heading>` (a tag define a hierarquia e `size` o tamanho: `display`, `title-1` a `title-4`); texto com `<Text>` (`lead`, `body`, `small`, `caption`); rótulos com `<Eyebrow>`. Cada tamanho já traz peso, entrelinha e tracking.
 - **Fonte:** SF Pro nos aparelhos Apple, pela fonte do sistema (a licença da Apple não permite embutir o SF Pro num site), e Inter nos demais, com tamanhos ópticos. Para ver a versão Inter no Mac, abra a prévia com `?fonte=inter`.
 - **Espaços:** `px-gutter` (lateral da página), `py-section` (entre seções), `mt-block` (título até o conteúdo), `p-card` (cards). Dentro dos componentes, a escala de 4px do Tailwind.

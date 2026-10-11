@@ -1,4 +1,6 @@
 import { Footer, Header } from '@/components/layout'
+import { ScrollAura } from '@/components/motion/ScrollAura'
+import { ScrollProgress } from '@/components/motion/ScrollProgress'
 import { useBookingSettings } from '@/queries/booking'
 import { useContactSettings, useOpeningHours, useSocialLinks } from '@/queries/contact'
 import { useGalleryImages } from '@/queries/gallery'
@@ -44,6 +46,8 @@ export function App() {
 
   return (
     <>
+      <ScrollProgress />
+      <ScrollAura />
       <Header />
       {/* tabIndex -1 permite receber o foco do link "Pular para o conteúdo". */}
       <main id="conteudo" tabIndex={-1} className="outline-none">

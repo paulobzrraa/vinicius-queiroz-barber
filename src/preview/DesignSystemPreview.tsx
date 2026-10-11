@@ -16,22 +16,22 @@ import { cn } from '@/utils/cn'
 
 // Principais: as duas cores da logo oficial e o fundo do tom escuro.
 const primaryColors = [
-  { name: 'Preto da marca', variable: '--gray-900', role: 'Texto da logo' },
+  { name: 'Azul-marinho', variable: '--ink-900', role: 'Superfície' },
   { name: 'Branco', variable: '--white', role: 'Fundo da logo' },
-  { name: 'Preto profundo', variable: '--gray-950', role: 'Fundo do tom escuro' },
+  { name: 'Azul-marinho profundo', variable: '--ink-950', role: 'Fundo do tom escuro' },
 ]
 
 const secondaryColors = [
-  { name: 'Gray 850', variable: '--gray-850', role: 'Superfície elevada' },
-  { name: 'Gray 800', variable: '--gray-800', role: 'Divisória' },
-  { name: 'Gray 700', variable: '--gray-700', role: 'Texto de apoio (claro)' },
-  { name: 'Gray 600', variable: '--gray-600', role: 'Borda de controle' },
-  { name: 'Gray 500', variable: '--gray-500', role: 'Borda de controle (claro)' },
-  { name: 'Gray 400', variable: '--gray-400', role: 'Texto de apoio' },
-  { name: 'Gray 300', variable: '--gray-300', role: 'Escala' },
-  { name: 'Gray 200', variable: '--gray-200', role: 'Divisória (claro)' },
-  { name: 'Gray 100', variable: '--gray-100', role: 'Hover do destaque' },
-  { name: 'Gray 50', variable: '--gray-50', role: 'Texto / superfície (claro)' },
+  { name: 'Aço 850', variable: '--ink-850', role: 'Superfície elevada' },
+  { name: 'Aço 800', variable: '--ink-800', role: 'Divisória' },
+  { name: 'Aço 700', variable: '--steel-700', role: 'Texto de apoio (claro)' },
+  { name: 'Aço 600', variable: '--steel-600', role: 'Borda de controle' },
+  { name: 'Aço 500', variable: '--steel-500', role: 'Borda de controle (claro)' },
+  { name: 'Aço 400', variable: '--steel-400', role: 'Texto de apoio' },
+  { name: 'Aço 300', variable: '--steel-300', role: 'Escala' },
+  { name: 'Aço 200', variable: '--steel-200', role: 'Divisória (claro)' },
+  { name: 'Aço 100', variable: '--chrome-100', role: 'Hover do destaque' },
+  { name: 'Aço 50', variable: '--chrome-50', role: 'Texto / superfície (claro)' },
 ]
 
 const semanticColors = [
@@ -338,8 +338,8 @@ export function DesignSystemPreview() {
             Tokens e componentes
           </Heading>
           <Text size="lead" tone="muted" className="mt-6 max-w-text">
-            Referência visual da Vinicius Queiroz Barber. Esta página só existe em desenvolvimento e não entra
-            no build de produção.
+            Referência visual da Vinicius Queiroz Barber. Esta página só existe em desenvolvimento e
+            não entra no build de produção.
           </Text>
           <Text size="small" tone="muted" className="mt-4 max-w-text">
             {interFont ? 'Mostrando a Inter, como Android e Windows veem. ' : ''}A fonte é o SF Pro
@@ -353,7 +353,7 @@ export function DesignSystemPreview() {
         <DocSection
           id="logo"
           title="Logo"
-          description="Uma imagem só, pintada com a cor do texto do tom: branca no escuro, preta (#191919) no claro. O arquivo veio da foto de perfil do Instagram, que só existe em 150px; um original em alta resolução melhora a nitidez nos tamanhos grandes."
+          description="Emblema colorido (cromo teal sobre preto), recortado de um post do Instagram e com fundo transparente. Usado como imagem, nos dois tons."
         >
           <BothTones>
             <div className="flex flex-wrap items-end gap-x-10 gap-y-6">

@@ -169,7 +169,7 @@ function ListStep({
           <Text size="body" tone="muted">
             Você não tem agendamentos futuros.
           </Text>
-          <Button href="/agendar">Agendar um horário</Button>
+          <Button href="/agendar">Reservar um horário</Button>
         </div>
       ) : (
         <ul className="divide-y divide-border border-y border-border">

@@ -2,14 +2,11 @@ import { ChevronDown } from 'lucide-react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useId } from 'react'
 
-import { fadeIn, fadeInUp, staggerContainer } from '@/animations'
-import logoHero from '@/assets/brand/logo-hero.png'
+import { badgeReveal, fadeIn, fadeInUp, staggerContainer } from '@/animations'
+import logo from '@/assets/brand/logo-color.png'
 import { Button, Container, Section } from '@/components/ui'
 import { sectionIds } from '@/data'
 import { useSiteSettings } from '@/queries/site'
-
-/** Proporção real do PNG (branco, fundo transparente) já recortado nas bordas do conteúdo. */
-const LOGO_HERO_ASPECT = 868 / 273
 
 /**
  * Camada decorativa de fundo. Com `hero_image_url` preenchido no admin, é a
@@ -69,10 +66,9 @@ function HeroBackdrop({ imageUrl }: { imageUrl: string | null }) {
  * Primeira seção da página. Comunica só o que é certo — a marca — sem
  * slogan, endereço, telefone ou preço inventados.
  *
- * A logo aparece como imagem (src/assets/brand/logo-hero.png): um PNG branco,
- * fundo transparente, extraído de uma foto em qualidade bem maior que a do
- * Instagram (1584×672 contra os 384×140 de antes) — suficiente pra o tamanho
- * que ela ocupa aqui sem borrar, mesmo em tela retina.
+ * O emblema colorido (src/assets/brand/logo-color.png) fica no centro, com um
+ * halo teal que pulsa devagar e um brilho de cromo que atravessa a marca uma
+ * vez ao carregar. Tudo com movimento só quando o usuário permite.
  *
  * Ocupa a tela toda (min-h-dvh); o header fica por cima, transparente, com
  * o próprio degradê de legibilidade (ver Header.tsx). `pt-header` garante
@@ -98,31 +94,82 @@ export function Hero() {
         variants={staggerContainer}
         className="relative z-10 grid min-h-dvh grid-rows-[1fr_auto]"
       >
-        <Container className="row-start-1 flex flex-col justify-center pt-header pb-16">
-          <motion.div variants={fadeInUp}>
-            <img
-              id={`${sectionIds.hero}-title`}
-              src={logoHero}
-              alt={site.name}
-              style={{ aspectRatio: LOGO_HERO_ASPECT }}
-              className="h-16 w-auto sm:h-24 md:h-32 lg:h-40"
+        <Container className="row-start-1 flex flex-col items-center justify-center pt-header pb-16 text-center">
+          <motion.div variants={badgeReveal} className="relative">
+            {/* Halo de luz atrás do emblema: pulsa devagar, só com movimento permitido. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-[-12%] rounded-full bg-glow-halo motion-safe:animate-glow-pulse"
             />
+
+            {/* Anel elétrico: um aro azul que respira ao redor do emblema. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-[-4%] rounded-full border border-accent/60 edge-glow motion-safe:animate-edge-pulse"
+            />
+
+            {/* Faísca que orbita a borda do emblema (um ponto de luz girando). */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-[-4%] motion-safe:animate-spark-orbit motion-reduce:hidden"
+            >
+              <span className="absolute top-0 left-1/2 size-2.5 -translate-x-1/2 rounded-full bg-accent shadow-glow" />
+            </div>
+
+            <div className="relative overflow-hidden rounded-full">
+              <img
+                id={`${sectionIds.hero}-title`}
+                src={logo}
+                alt={site.name}
+                width={600}
+                height={600}
+                fetchPriority="high"
+                className="size-56 sm:size-72 lg:size-96"
+              />
+              {/* Brilho de cromo que atravessa o emblema uma vez ao carregar. */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 bg-chrome-sheen motion-safe:animate-chrome-sheen"
+              />
+            </div>
           </motion.div>
+
+          {/* Faixa de barbearia (listras que deslizam, como o poste) separa o emblema dos botões. */}
+          <motion.div
+            variants={fadeInUp}
+            aria-hidden="true"
+            className="mt-10 h-2 w-56 rounded-full pole-band edge-glow motion-safe:animate-pole-slide sm:w-72"
+          />
 
           <motion.div
             variants={fadeInUp}
-            className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center"
+            className="mt-10 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center"
           >
-            <Button href={`#${sectionIds.booking}`} size="lg" className="w-full sm:w-auto">
-              Agendar horário
-            </Button>
+            <div className="relative">
+              {/* Brilho teal atrás da placa principal, fora do recorte para não ser cortado. */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-x-4 top-1/2 -bottom-3 -z-10 rounded-full bg-glow-halo opacity-80 blur-xl"
+              />
+              <Button href={`#${sectionIds.booking}`} size="lg" className="w-full sm:w-auto">
+                Reserve sua cadeira
+              </Button>
+            </div>
+
+            {/* Divisor ornamental: losango entre dois fios, na horizontal no desktop. */}
+            <span aria-hidden="true" className="hidden items-center gap-3 text-accent sm:flex">
+              <span className="h-px w-10 bg-gradient-to-r from-transparent to-accent" />
+              <span className="size-2 rotate-45 border border-accent" />
+              <span className="h-px w-10 bg-gradient-to-l from-transparent to-accent" />
+            </span>
+
             <Button
               href={`#${sectionIds.about}`}
               variant="outline"
               size="lg"
               className="w-full sm:w-auto"
             >
-              Conhecer a barbearia
+              Conheça a casa
             </Button>
           </motion.div>
         </Container>

@@ -21,24 +21,26 @@ type ButtonAsLink = ButtonOwnProps &
 
 export type ButtonProps = ButtonAsButton | ButtonAsLink
 
-// Pressionar encolhe o botão (resposta imediata ao toque); quem prefere menos
-// movimento fica só com a troca de cor.
+/*
+ * Botão em forma de placa (classes .plaque em src/styles/utilities.css): canto
+ * chanfrado, borda de cromo e rótulo em caixa alta, com brilho no hover. Não é
+ * a pílula padrão. Pressionar encolhe a placa; quem prefere menos movimento
+ * fica só com a troca de cor.
+ */
 const base =
-  'group inline-flex shrink-0 items-center justify-center gap-2 rounded-control font-semibold whitespace-nowrap select-none transition-control motion-safe:active:scale-97 disabled:pointer-events-none disabled:opacity-40 aria-disabled:pointer-events-none aria-disabled:opacity-40'
+  'group plaque inline-flex shrink-0 items-center justify-center gap-3 font-display font-semibold uppercase tracking-[0.2em] whitespace-nowrap select-none motion-safe:active:scale-97 disabled:pointer-events-none disabled:opacity-40 aria-disabled:pointer-events-none aria-disabled:opacity-40'
 
 const variants: Record<ButtonVariant, string> = {
-  // O destaque da marca é a inversão: branco no tom escuro, preto no claro.
-  primary: 'bg-accent text-accent-foreground hover:bg-accent-hover hover:shadow-glow',
-  secondary: 'bg-foreground/10 text-foreground hover:bg-foreground/16',
-  outline:
-    'border border-border-strong text-foreground hover:border-foreground hover:bg-foreground/5',
-  ghost: 'text-foreground hover:bg-foreground/8',
+  primary: 'plaque-primary',
+  secondary: 'plaque-outline',
+  outline: 'plaque-outline',
+  ghost: 'text-foreground hover:text-accent',
 }
 
 const sizes: Record<ButtonSize, string> = {
-  sm: 'h-9 px-4 text-caption [&_svg]:size-4',
-  md: 'h-11 px-5 text-small [&_svg]:size-4.5',
-  lg: 'h-14 px-7 text-body [&_svg]:size-5',
+  sm: 'h-10 px-5 text-eyebrow [&_svg]:size-4',
+  md: 'h-12 px-6 text-caption [&_svg]:size-4.5',
+  lg: 'h-14 px-8 text-small [&_svg]:size-5',
 }
 
 function ButtonContent({
@@ -49,7 +51,7 @@ function ButtonContent({
   return (
     <>
       {iconStart && (
-        <span aria-hidden="true" className="-ms-0.5 flex">
+        <span aria-hidden="true" className="flex">
           {iconStart}
         </span>
       )}
@@ -57,7 +59,7 @@ function ButtonContent({
       {iconEnd && (
         <span
           aria-hidden="true"
-          className="-me-0.5 flex transition-control motion-safe:group-hover:translate-x-0.5"
+          className="flex transition-control motion-safe:group-hover:translate-x-1"
         >
           {iconEnd}
         </span>

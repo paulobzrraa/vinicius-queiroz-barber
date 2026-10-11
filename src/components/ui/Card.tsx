@@ -20,9 +20,9 @@ export function Card({ as = 'div', interactive = false, className, ...props }: C
   return (
     <Tag
       className={cn(
-        'rounded-card border border-border bg-surface p-card shadow-card',
+        'panel-frame panel-live rounded-card p-card',
         interactive &&
-          'transition-control hover:border-border-strong hover:bg-surface-raised hover:shadow-elevated motion-safe:hover:-translate-y-1 motion-safe:active:scale-99',
+          'transition-control motion-safe:hover:-translate-y-1 motion-safe:active:scale-99 hover:[&::after]:opacity-100',
         className,
       )}
       {...props}

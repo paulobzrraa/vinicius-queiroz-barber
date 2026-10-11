@@ -31,12 +31,21 @@ const sizeByTag: Record<HeadingTag, HeadingSize> = {
  * Título na escala da marca. Separa a hierarquia do documento (`as`) do
  * tamanho visual (`size`): um h1 pode usar `display` no Hero, por exemplo.
  */
+/** Nos tamanhos grandes o título ganha o acabamento de metal escovado (text-chrome). */
+const chromeSizes = new Set<HeadingSize>(['display', 'title-1', 'title-2'])
+
 export function Heading({ as = 'h2', size, className, ...props }: HeadingProps) {
   const Tag: ElementType = as
+  const resolvedSize = size ?? sizeByTag[as]
 
   return (
     <Tag
-      className={cn('font-display text-balance', sizes[size ?? sizeByTag[as]], className)}
+      className={cn(
+        'scroll-title font-display text-balance',
+        sizes[resolvedSize],
+        chromeSizes.has(resolvedSize) && 'text-chrome',
+        className,
+      )}
       {...props}
     />
   )

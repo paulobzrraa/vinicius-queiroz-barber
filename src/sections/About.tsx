@@ -12,7 +12,7 @@ export function About() {
   const { data: site } = useSiteSettings()
 
   return (
-    <Section id={sectionIds.about} aria-labelledby={`${sectionIds.about}-title`}>
+    <Section id={sectionIds.about} topDivider aria-labelledby={`${sectionIds.about}-title`}>
       <Container>
         <div className="flex flex-col items-center gap-10 text-center">
           <div>

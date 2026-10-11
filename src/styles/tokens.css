@@ -7,35 +7,51 @@
  * 2. Tokens semânticos (@theme): o papel de cada cor, tamanho e espaço. Cada
  *    um vira classe do Tailwind (--color-accent -> bg-accent, text-accent...).
  *
- * A marca é monocromática. A paleta vem da logo oficial (perfil do Instagram
- * o perfil oficial da marca), medida nos pixels: texto #191919 e fundo branco, sem
- * nenhuma cor. Nas fotos do perfil, 74% dos pixels também são neutros; o
- * resto é tom de pele e madeira, sem cor de marca. Por isso não há cor de
- * destaque: o destaque é a inversão (branco no escuro, preto no claro).
+ * A paleta vem da logo oficial (cromo azulado sobre preto, como nas fotos do
+ * Instagram): fundo azul-marinho bem escuro, textos em prata e um teal de
+ * brilho como destaque. No tom claro, o destaque vira um teal mais fundo.
  *
  * Todos os pares de texto e fundo passam no contraste WCAG AA, nos dois tons.
  */
 
 :root {
-  /* Cinzas neutros (R=G=B), do branco da logo ao preto da marca */
-  --white: #ffffff; /* fundo da logo */
-  --gray-50: #f4f4f4;
-  --gray-100: #e8e8e8;
-  --gray-200: #d2d2d2;
-  --gray-300: #b3b3b3;
-  --gray-400: #999999; /* texto de apoio no tom escuro */
-  --gray-500: #858585; /* bordas de controles no tom claro (3:1) */
-  --gray-600: #707070; /* bordas de controles no tom escuro (3:1) */
-  --gray-700: #666666; /* texto de apoio no tom claro */
-  --gray-800: #333333;
-  --gray-850: #262626;
-  --gray-900: #191919; /* texto da logo: o preto da marca */
-  --gray-950: #0d0d0d; /* fundo do tom escuro */
+  /*
+   * Paleta da marca, tirada da logo (cromo azulado sobre preto): azul-marinho
+   * profundo no fundo, aço e prata nos textos e bordas, e um teal de brilho
+   * como destaque — a mesma luz das fotos do Instagram.
+   */
+  --ink-950: #03070c; /* fundo do tom escuro (o preto da logo) */
+  --ink-900: #071019; /* superfícies */
+  --ink-850: #0c1a26; /* superfície elevada */
+  --ink-800: #142636; /* divisórias */
+  --steel-600: #2c4a5e; /* bordas de controles no tom escuro */
+  --steel-500: #4f6f84; /* bordas de controles no tom claro (3:1) */
+  --steel-400: #8fa9b8; /* texto de apoio no tom escuro */
+  --steel-300: #b9cdd8; /* escala de prata */
+  --steel-700: #3d5670; /* texto de apoio no tom claro */
+  --steel-200: #d4e2ea; /* divisórias no tom claro */
+  --chrome-100: #dfeaf0; /* prata clara: hover do destaque */
+  --chrome-50: #eef5f8; /* texto principal no tom escuro */
+  --white: #ffffff;
+  --teal-300: #54dcff; /* destaque: azul elétrico, o brilho da arte do Instagram */
+  --teal-400: #22c8f2;
+  --teal-700: #0c6076; /* destaque no tom claro (contraste AA com branco) */
+  --teal-800: #084a5c;
+  --mist-50: #f1f6f8; /* fundo do tom claro */
+
+  /*
+   * Faixas do metal escovado da tipografia (background-clip: text). Vão do
+   * reflexo claro ao vinco escuro e de volta. Redefinidas no tom claro para
+   * um metal escuro e polido.
+   */
+  --chrome-hi: #ffffff;
+  --chrome-mid: #9fb8c6;
+  --chrome-lo: #536b7d;
 
   /* Cores das sombras; mudam com o tom (ver tone-light) */
-  --shadow-highlight: rgb(255 255 255 / 0.06);
-  --shadow-ambient: rgb(0 0 0 / 0.4);
-  --shadow-drop: rgb(0 0 0 / 0.7);
+  --shadow-highlight: rgb(200 230 240 / 0.08);
+  --shadow-ambient: rgb(0 0 0 / 0.5);
+  --shadow-drop: rgb(0 0 0 / 0.75);
 
   /* Durações (o Tailwind não tem tokens de duração no tema) */
   --duration-press: 160ms; /* resposta ao toque */
@@ -54,17 +70,18 @@
 
 @theme {
   /* ---------------------------------------------------------------- Cores */
-  --color-background: var(--gray-950);
-  --color-surface: var(--gray-900);
-  --color-surface-raised: var(--gray-850);
-  --color-border: var(--gray-800);
-  --color-border-strong: var(--gray-600);
-  --color-foreground: var(--gray-50);
-  --color-muted: var(--gray-400);
-  /* Destaque: inversão do fundo. Botão principal, foco e seleção. */
-  --color-accent: var(--white);
-  --color-accent-hover: var(--gray-100);
-  --color-accent-foreground: var(--gray-950);
+  --color-background: var(--ink-950);
+  --color-surface: var(--ink-900);
+  --color-surface-raised: var(--ink-850);
+  --color-border: var(--ink-800);
+  --color-border-strong: var(--steel-600);
+  --color-foreground: var(--chrome-50);
+  --color-muted: var(--steel-400);
+  /* Destaque: o teal do brilho da logo. Botão principal, foco e seleção. */
+  --color-accent: var(--teal-300);
+  --color-accent-hover: var(--teal-400);
+  --color-accent-foreground: var(--ink-950);
+  --color-glow: var(--teal-300);
 
   /* ----------------------------------------------------------- Tipografia */
   /*
@@ -162,6 +179,72 @@
   --breakpoint-xs: 23.4375rem; /* 375px */
   --breakpoint-3xl: 120rem; /* 1920px */
 
+  /* ------------------------------------------------------------ Animações */
+  /* Halo do emblema do Hero (pulsa devagar) e o brilho de cromo que o atravessa. */
+  --animate-glow-pulse: glow-pulse 6s var(--ease-in-out) infinite;
+  --animate-chrome-sheen: chrome-sheen 1.6s var(--ease-in-out) 0.6s 1 both;
+  --animate-pole-slide: pole-slide 1.2s linear infinite;
+  --animate-ring-spin: ring-spin 48s linear infinite;
+  /* Pulso elétrico: a borda do painel respira em azul, como a arte da logo. */
+  --animate-edge-pulse: edge-pulse 3.2s var(--ease-in-out) infinite;
+  /* Faísca que percorre a borda do emblema no Hero. */
+  --animate-spark-orbit: spark-orbit 6s linear infinite;
+
+  @keyframes pole-slide {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 42px 0;
+    }
+  }
+
+  @keyframes ring-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes glow-pulse {
+    0%,
+    100% {
+      opacity: 0.55;
+      scale: 0.97;
+    }
+    50% {
+      opacity: 1;
+      scale: 1.03;
+    }
+  }
+
+  @keyframes chrome-sheen {
+    from {
+      transform: translateX(-120%) skewX(-18deg);
+    }
+    to {
+      transform: translateX(220%) skewX(-18deg);
+    }
+  }
+
+  @keyframes edge-pulse {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes spark-orbit {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
   /* ----------------------------------------------------------------- Raios */
   --radius-control: 9999px; /* botões e chips: pílula */
   --radius-card: 1.25rem;
@@ -170,10 +253,10 @@
   /* --------------------------------------------------------------- Sombras */
   --shadow-card: inset 0 1px 0 0 var(--shadow-highlight), 0 1px 2px 0 var(--shadow-ambient);
   --shadow-elevated: inset 0 1px 0 0 var(--shadow-highlight), 0 24px 48px -16px var(--shadow-drop);
-  /* Brilho suave na cor do texto: claro no tom escuro, escuro no tom claro. */
+  /* Brilho suave na cor de destaque (teal), nos dois tons. */
   --shadow-glow:
-    0 0 0 1px color-mix(in oklab, var(--color-foreground) 18%, transparent),
-    0 12px 32px -8px color-mix(in oklab, var(--color-foreground) 28%, transparent);
+    0 0 0 1px color-mix(in oklab, var(--color-glow) 40%, transparent),
+    0 12px 36px -8px color-mix(in oklab, var(--color-glow) 45%, transparent);
 
   /* ---------------------------------------------------------- Proporções */
   --aspect-portrait: 4 / 5;
@@ -195,19 +278,24 @@
  * estiver dentro se adapta sozinho, inclusive a logo.
  */
 @utility tone-light {
-  --color-background: var(--white);
-  --color-surface: var(--gray-50);
-  --color-surface-raised: var(--gray-100);
-  --color-border: var(--gray-200);
-  --color-border-strong: var(--gray-500);
-  --color-foreground: var(--gray-900);
-  --color-muted: var(--gray-700);
-  --color-accent: var(--gray-900);
-  --color-accent-hover: var(--gray-800);
+  --color-background: var(--mist-50);
+  --color-surface: var(--white);
+  --color-surface-raised: var(--chrome-50);
+  --color-border: var(--steel-200);
+  --color-border-strong: var(--steel-500);
+  --color-foreground: var(--ink-900);
+  --color-muted: var(--steel-700);
+  --color-accent: var(--teal-700);
+  --color-accent-hover: var(--teal-800);
   --color-accent-foreground: var(--white);
+  --color-glow: var(--teal-700);
+  /* Metal escuro e polido para a tipografia no tom claro. */
+  --chrome-hi: #5c7688;
+  --chrome-mid: #0c1a26;
+  --chrome-lo: #39566c;
   --shadow-highlight: rgb(255 255 255 / 0.8);
-  --shadow-ambient: rgb(25 25 25 / 0.06);
-  --shadow-drop: rgb(25 25 25 / 0.16);
+  --shadow-ambient: rgb(7 16 25 / 0.06);
+  --shadow-drop: rgb(7 16 25 / 0.16);
 
   color-scheme: light;
   background-color: var(--color-background);
