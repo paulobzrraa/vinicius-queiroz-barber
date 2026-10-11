@@ -528,6 +528,33 @@ $$;
 revoke all on function get_appointment_by_token(uuid) from public;
 grant execute on function get_appointment_by_token(uuid) to anon, authenticated;
 
+-- Serviços do agendamento pelo link único (confirmação e consulta por token). A
+-- tabela appointment_services não tem leitura anônima (RLS só para o admin), então
+-- o cliente sem login recebe só os serviços do próprio token, com o nome de cada um.
+drop function if exists get_appointment_services_by_token(uuid);
+create function get_appointment_services_by_token(token uuid)
+returns table (
+  appointment_id uuid,
+  service_id text,
+  price numeric(10,2),
+  duration_minutes integer,
+  name text
+)
+language sql
+security definer
+set search_path = public
+as $$
+  select aps.appointment_id, aps.service_id, aps.price, aps.duration_minutes, s.name
+  from appointments a
+  join appointment_services aps on aps.appointment_id = a.id
+  join services s on s.id = aps.service_id
+  where a.access_token = token
+  order by s.name;
+$$;
+
+revoke all on function get_appointment_services_by_token(uuid) from public;
+grant execute on function get_appointment_services_by_token(uuid) to anon, authenticated;
+
 -- ===================== Agendamento: Disponibilidade (BL-059 a BL-063) =====================
 
 -- BL-063: fuso único usado em todo o cálculo de disponibilidade, para

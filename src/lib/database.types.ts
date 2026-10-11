@@ -402,6 +402,16 @@ export interface Database {
         Args: { token: string }
         Returns: Database['public']['Tables']['appointments']['Row'][]
       }
+      get_appointment_services_by_token: {
+        Args: { token: string }
+        Returns: {
+          appointment_id: string
+          service_id: string
+          price: number | null
+          duration_minutes: number | null
+          name: string
+        }[]
+      }
       get_available_slots: {
         Args: { p_service_ids: string[]; p_date: string; p_professional_id?: string | null }
         Returns: { professional_id: string; starts_at: string; ends_at: string }[]

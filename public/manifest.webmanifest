@@ -1,7 +1,7 @@
 {
   "name": "Vinicius Queiroz Barber",
   "short_name": "Vinicius Queiroz Barber",
-  "start_url": "/admin",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#03070c",
