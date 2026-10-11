@@ -152,8 +152,7 @@ export function Hero() {
     const x = Math.min(1, Math.max(0, (event.clientX - box.left) / box.width))
     const y = Math.min(1, Math.max(0, (event.clientY - box.top) / box.height))
     targetY.set((x - 0.5) * 360)
-    // No dedo só o giro horizontal: um arrasto vertical é rolagem, e a rolagem já gira a logo.
-    if (event.pointerType !== 'touch') targetX.set((0.5 - y) * 360)
+    targetX.set((0.5 - y) * 360)
     scheduleReturn()
   }
 
